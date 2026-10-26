@@ -1,0 +1,101 @@
+{
+  "nav": {
+    "all": "Wszystkie",
+    "langSwitch": "Zmień język",
+    "menuOpen": "Otwórz menu",
+    "menuClose": "Zamknij menu"
+  },
+  "home": {
+    "ticker": [
+      "Cannes 2026 — trzy polskie filmy w konkursie głównym",
+      "KSW 92 wyprzedane w 47 minut",
+      "Bloober Team ogłasza nowy projekt na 2027",
+      "Open'er potwierdza pierwszy headliner"
+    ],
+    "heroTitlePre": "Twarze",
+    "heroTitleIta": "stojące",
+    "heroTitlePost": "za polską kulturą —",
+    "heroTitleGray": "bez filtrów.",
+    "weekFace": "Twarz tygodnia",
+    "bottomStrip": [
+      { "kicker": "Cannes 2026", "text": "Trzy polskie tytuły w konkursie głównym" },
+      { "kicker": "Cronos", "text": "Bloober Team dorasta — pierwsze wrażenia z gry" },
+      { "kicker": "Open'er", "text": "Pierwszy headliner potwierdzony, są też pierwsze kontrowersje" },
+      { "kicker": "Boks", "text": "Adamek ogłasza koniec kariery. Zostaje po nim epoka" }
+    ],
+    "sectionLabel": "Sekcja",
+    "showMore": "Pokaż więcej",
+    "showLess": "Pokaż mniej",
+    "gallery": {
+      "kicker": "Galeria · Behind the scenes",
+      "titlePre": "Twarze",
+      "titleIta": "tego tygodnia",
+      "meta": "Fotografia · 12 kadrów"
+    },
+    "upcoming": {
+      "kicker": "Nadchodzące",
+      "cta": "Cały kalendarz →",
+      "events": [
+        { "date": "28.09", "meta": "Sobota · Gliwice · MMA", "title": "KSW 92: Materla vs Soldić" },
+        { "date": "12.10", "meta": "Sobota · Kraków · Boks", "title": "Gala Polsat Boxing: Kabayel — Wach" },
+        { "date": "02.11", "meta": "Niedziela · Łódź · MMA", "title": "FEN 55: Turniej wagi półśredniej" }
+      ]
+    },
+    "manifest": {
+      "kicker": "Manifest",
+      "quotePre": "Piszemy o kulturze",
+      "quoteIta": "tak",
+      "quotePost": ", jak sami chcielibyśmy o niej czytać.",
+      "signature": "— Redakcja Twarzy Kultury, wrzesień 2026"
+    }
+  },
+  "category": {
+    "materialsCount": "Materiałów",
+    "updatedToday": "Aktualizacja · Dzisiaj",
+    "featured": "Wyróżniony",
+    "allItems": "Wszystkie",
+    "items": "pozycji",
+    "sort": "Sortuj · Najnowsze ↓",
+    "prev": "← Poprzednia",
+    "next": "Następna →"
+  },
+  "article": {
+    "share": "Udostępnij",
+    "readMore": "Czytaj dalej",
+    "minRead": "min czytania"
+  },
+  "footer": {
+    "tagline": "Niezależny magazyn kulturalny. Muzyka, film, sport, gry — piszemy o tym, co warto oglądać, słuchać i o czym warto mówić.",
+    "sections": "Sekcje",
+    "editorial": "Redakcja",
+    "contact": "Kontakt",
+    "adminLabel": "Administrator",
+    "follow": "Śledź",
+    "followLinks": ["Instagram", "YouTube", "Spotify", "RSS"],
+    "legal": "Prawne",
+    "terms": "Regulamin",
+    "privacy": "Polityka prywatności",
+    "cookies": "Polityka cookies",
+    "cookieSettings": "Ustawienia cookies",
+    "rights": "© 2026 Twarze Kultury. Wszystkie prawa zastrzeżone.",
+    "edition": "Made in PL · Wydanie 47"
+  },
+  "cookies": {
+    "badge": "Prywatność",
+    "title": "Szanujemy Twoją prywatność",
+    "intro": "Używamy niezbędnych plików cookies, aby Serwis działał, oraz opcjonalnych — do preferencji, analityki i marketingu. Możesz zaakceptować wszystkie, odrzucić opcjonalne albo wybrać kategorie. Szczegóły w",
+    "policyLink": "Polityce cookies",
+    "acceptAll": "Akceptuję wszystkie",
+    "rejectOptional": "Tylko niezbędne",
+    "customize": "Dostosuj",
+    "saveChoices": "Zapisz wybór",
+    "necessaryTitle": "Niezbędne",
+    "necessaryDesc": "Wymagane do działania strony i zapamiętania Twojej decyzji o zgodzie.",
+    "preferencesTitle": "Preferencje",
+    "preferencesDesc": "Zapamiętują ustawienia, np. język lub wygląd.",
+    "analyticsTitle": "Analityczne",
+    "analyticsDesc": "Pomagają zrozumieć, jak korzystasz z Serwisu — tylko za zgodą.",
+    "marketingTitle": "Marketingowe",
+    "marketingDesc": "Służą personalizacji komunikatów lub reklam — tylko za zgodą."
+  }
+}

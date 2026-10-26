@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+  @keyframes tk-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+  @keyframes tk-grain { 0%{transform:translate(0,0)} 20%{transform:translate(-3%,2%)} 40%{transform:translate(2%,-4%)} 60%{transform:translate(-2%,3%)} 80%{transform:translate(3%,-2%)} 100%{transform:translate(0,0)} }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: #E85D3C; }
+  ::selection { background: #E85D3C; color: #0B0A08; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #0B0A08; color: #F2ECDD; font-family: 'Inter Tight', system-ui, sans-serif; }
+  .tk-nav-item { position: relative; }
+  .tk-nav-item > .tk-drop { position:absolute; top:calc(100% + 14px); right:0; min-width:220px; background:#0B0A08; border:1px solid rgba(242,236,221,.1); padding:8px 0; opacity:0; pointer-events:none; transform:translateY(-6px); transition:opacity .22s ease, transform .22s ease; z-index:120; }
+  .tk-nav-item:hover > .tk-drop, .tk-nav-item:focus-within > .tk-drop { opacity:1; pointer-events:auto; transform:translateY(0); }
+  .tk-drop a { display:flex; justify-content:space-between; padding:12px 18px; font-size:11px; letter-spacing:.08em; color:#F2ECDD; }
+  .tk-drop a:hover { background:rgba(232,93,60,.08); color:#E85D3C; }
+  .tk-drop a span:last-child { color:#8B857A; font-size:10px; }
+  .tk-nav-item > a[data-cat]::after { content:'▾'; margin-left:6px; font-size:9px; opacity:.6; }
+</style>
+</helmet>
+
+<div style="position:relative;background:#0B0A08;color:#F2ECDD;min-height:100vh;overflow-x:hidden;font-family:'Inter Tight',system-ui,sans-serif;">
+
+  <!-- FILM GRAIN OVERLAY -->
+  <div style="position:fixed;inset:-50%;pointer-events:none;z-index:200;opacity:.08;mix-blend-mode:overlay;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/></svg>');animation:tk-grain 1.6s steps(6) infinite;"></div>
+
+  <!-- VIGNETTE -->
+  <div style="position:fixed;inset:0;pointer-events:none;z-index:150;background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,.55) 100%);"></div>
+
+  <!-- NAV -->
+  <header style="position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);background:rgba(11,10,8,.72);border-bottom:1px solid rgba(242,236,221,.08);">
+    <div style="max-width:1600px;margin:0 auto;padding:18px 32px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:32px;">
+      <div style="display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;">
+        <span style="width:8px;height:8px;background:#E85D3C;border-radius:50%;box-shadow:0 0 12px #E85D3C;"></span>
+        <span>Na żywo · Wydanie 47</span>
+      </div>
+      <a href="#top" style="font-family:'Playfair Display',serif;font-weight:500;font-size:26px;letter-spacing:-.02em;font-style:italic;">Twarze <span style="font-style:normal;font-weight:300;">Kultury</span></a>
+      <nav style="display:flex;justify-content:flex-end;gap:28px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;align-items:center;">
+        <div class="tk-nav-item"><a href="./Kategoria.dc.html?cat=muzyka" data-cat>Muzyka</a>
+          <div class="tk-drop">
+            <a href="./Kategoria.dc.html?cat=muzyka"><span>Wszystkie</span><span>1852</span></a>
+            <a href="./Kategoria.dc.html?cat=muzyka&sub=recenzje"><span>Recenzje</span><span>247</span></a>
+            <a href="./Kategoria.dc.html?cat=muzyka&sub=koncerty"><span>Koncerty</span><span>89</span></a>
+            <a href="./Kategoria.dc.html?cat=muzyka&sub=wywiady"><span>Wywiady</span><span>312</span></a>
+            <a href="./Kategoria.dc.html?cat=muzyka&sub=newsy"><span>Newsy</span><span>1204</span></a>
+          </div>
+        </div>
+        <div class="tk-nav-item"><a href="./Kategoria.dc.html?cat=film" data-cat>Film</a>
+          <div class="tk-drop">
+            <a href="./Kategoria.dc.html?cat=film"><span>Wszystkie</span><span>1080</span></a>
+            <a href="./Kategoria.dc.html?cat=film&sub=recenzje"><span>Recenzje</span><span>184</span></a>
+            <a href="./Kategoria.dc.html?cat=film&sub=newsy"><span>Newsy</span><span>896</span></a>
+          </div>
+        </div>
+        <div class="tk-nav-item"><a href="./Kategoria.dc.html?cat=sport" data-cat>Sport</a>
+          <div class="tk-drop">
+            <a href="./Kategoria.dc.html?cat=sport"><span>Wszystkie</span><span>241</span></a>
+            <a href="./Kategoria.dc.html?cat=sport&sub=mma"><span>MMA</span><span>143</span></a>
+            <a href="./Kategoria.dc.html?cat=sport&sub=boks"><span>Boks</span><span>98</span></a>
+          </div>
+        </div>
+        <div class="tk-nav-item"><a href="./Kategoria.dc.html?cat=gry" data-cat>Gry</a>
+          <div class="tk-drop">
+            <a href="./Kategoria.dc.html?cat=gry"><span>Wszystkie</span><span>127</span></a>
+            <a href="./Kategoria.dc.html?cat=gry&sub=recenzje"><span>Recenzje</span><span>76</span></a>
+            <a href="./Kategoria.dc.html?cat=gry&sub=zapowiedzi"><span>Zapowiedzi</span><span>51</span></a>
+          </div>
+        </div>
+        <a href="#" style="color:#E85D3C;">Prenumerata</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MARQUEE TICKER -->
+  <div style="border-bottom:1px solid rgba(242,236,221,.08);overflow:hidden;padding:12px 0;background:rgba(20,18,14,.4);">
+    <div style="display:flex;gap:56px;white-space:nowrap;animation:tk-marquee 60s linear infinite;font-family:'JetBrains Mono',monospace;font-size:12px;color:#8B857A;letter-spacing:.06em;">
+      <span>◉ Cannes 2026 — trzy polskie filmy w konkursie głównym</span>
+      <span>◉ KSW 92 wyprzedane w 47 minut</span>
+      <span>◉ Bloober Team ogłasza nowy projekt na 2027</span>
+      <span>◉ Open'er potwierdza pierwszy headliner</span>
+      <span>◉ Cannes 2026 — trzy polskie filmy w konkursie głównym</span>
+      <span>◉ KSW 92 wyprzedane w 47 minut</span>
+      <span>◉ Bloober Team ogłasza nowy projekt na 2027</span>
+      <span>◉ Open'er potwierdza pierwszy headliner</span>
+    </div>
+  </div>
+
+  <main id="top" style="max-width:1600px;margin:0 auto;padding:0 32px;">
+
+    <!-- HERO -->
+    <section style="padding:88px 0 64px;border-bottom:1px solid rgba(242,236,221,.08);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:32px;margin-bottom:56px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;">
+        <span>№ 001 — Wydanie tygodnia</span>
+        <span>Wrzesień 14, 2026</span>
+      </div>
+
+      <h1 data-split="lines" style="font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(60px,9vw,148px);line-height:.94;letter-spacing:-.03em;margin:0 0 48px;text-wrap:balance;">
+        Twarze <span style="font-style:italic;font-weight:400;">stojące</span> za&nbsp;polską<br>
+        kulturą — <span style="color:#8B857A;">bez filtrów.</span>
+      </h1>
+
+      <!-- HERO GRID: newspaper 3+1 -->
+      <div style="display:grid;grid-template-columns:1.4fr .9fr .9fr;gap:1px;background:rgba(242,236,221,.08);margin-top:72px;">
+        <!-- BIG LEAD -->
+        <article style="background:#0B0A08;padding:0;display:flex;flex-direction:column;">
+          <a href="#artykul" style="display:flex;flex-direction:column;height:100%;">
+            <div style="position:relative;aspect-ratio:4/5;overflow:hidden;">
+              <image-slot id="hero-1" shape="rect" placeholder="Portret — sesja główna"></image-slot>
+              <div style="position:absolute;top:20px;left:20px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:#F2ECDD;background:#E85D3C;padding:6px 10px;text-transform:uppercase;">Twarz tygodnia</div>
+              <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,rgba(11,10,8,.9));"></div>
+            </div>
+            <div style="padding:32px 28px 36px;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:14px;">Muzyka · Wywiad</div>
+              <h2 style="font-family:'Playfair Display',serif;font-weight:400;font-size:44px;line-height:1;letter-spacing:-.02em;margin:0 0 18px;text-wrap:balance;">Mrozu o milczeniu, ojcostwie i&nbsp;płycie, której nikt się nie spodziewał</h2>
+              <p style="font-family:'Playfair Display',serif;font-size:17px;line-height:1.5;color:#B8B0A0;margin:0 0 20px;max-width:52ch;">Przez półtora roku nie wypuścił niczego. Wrócił z materiałem, który dzieli fanów na dwa obozy. Rozmawialiśmy o tym, czy artysta ma prawo do ciszy.</p>
+              <div style="display:flex;gap:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">
+                <span>Aleksandra Zych</span><span>·</span><span>12 min czytania</span>
+              </div>
+            </div>
+          </a>
+        </article>
+
+        <!-- SECONDARY -->
+        <article style="background:#0B0A08;padding:0;">
+          <a href="#" style="display:flex;flex-direction:column;height:100%;">
+            <div style="aspect-ratio:4/3;overflow:hidden;">
+              <image-slot id="hero-2" shape="rect" placeholder="Kadr filmowy"></image-slot>
+            </div>
+            <div style="padding:28px;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;margin-bottom:12px;">Film · Recenzja</div>
+              <h3 style="font-family:'Playfair Display',serif;font-weight:400;font-size:30px;line-height:1.05;letter-spacing:-.01em;margin:0 0 14px;">„Kos" Michała Rosy — polskie kino ma nowego mistrza formy</h3>
+              <p style="font-family:'Playfair Display',serif;font-size:15px;line-height:1.5;color:#8B857A;margin:0;">Historia z 1794 roku opowiedziana językiem 2026. Chłodno, bezkompromisowo, momentami nieznośnie pięknie.</p>
+            </div>
+          </a>
+        </article>
+
+        <!-- SECONDARY 2 -->
+        <article style="background:#0B0A08;padding:0;">
+          <a href="#" style="display:flex;flex-direction:column;height:100%;">
+            <div style="aspect-ratio:4/3;overflow:hidden;">
+              <image-slot id="hero-3" shape="rect" placeholder="Sport / ring"></image-slot>
+            </div>
+            <div style="padding:28px;">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;margin-bottom:12px;">Sport · MMA</div>
+              <h3 style="font-family:'Playfair Display',serif;font-weight:400;font-size:30px;line-height:1.05;letter-spacing:-.01em;margin:0 0 14px;">Materla wraca po pięciu latach. KSW 92 to nie jest bajka o zwycięstwie</h3>
+              <p style="font-family:'Playfair Display',serif;font-size:15px;line-height:1.5;color:#8B857A;margin:0;">Byliśmy w Gliwicach na treningu otwartym. To, co zobaczyliśmy, było niepokojące i piękne w tym samym momencie.</p>
+            </div>
+          </a>
+        </article>
+      </div>
+
+      <!-- HERO BOTTOM STRIP -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:32px;margin-top:56px;padding-top:32px;border-top:1px solid rgba(242,236,221,.08);">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:8px;">Cannes 2026</div>
+          <div style="font-family:'Playfair Display',serif;font-size:19px;line-height:1.25;">Trzy polskie tytuły w konkursie głównym</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:8px;">Cronos</div>
+          <div style="font-family:'Playfair Display',serif;font-size:19px;line-height:1.25;">Bloober Team dorasta — pierwsze wrażenia z gry</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:8px;">Open'er</div>
+          <div style="font-family:'Playfair Display',serif;font-size:19px;line-height:1.25;">Pierwszy headliner potwierdzony, są też pierwsze kontrowersje</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:8px;">Boks</div>
+          <div style="font-family:'Playfair Display',serif;font-size:19px;line-height:1.25;">Adamek ogłasza koniec kariery. Zostaje po nim epoka</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MUZYKA -->
+    <section id="muzyka" data-section="Muzyka" style="padding:120px 0;border-bottom:1px solid rgba(242,236,221,.08);position:relative;">
+      <div style="display:grid;grid-template-columns:.9fr 2.4fr;gap:64px;align-items:start;margin-bottom:72px;">
+        <div style="position:sticky;top:110px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:20px;">Sekcja 01</div>
+          <h2 data-split="chars" style="font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(72px,10vw,168px);line-height:.86;letter-spacing:-.04em;margin:0;">Mu<span style="font-style:italic;">zy</span>ka</h2>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1.5;color:#8B857A;margin-top:32px;max-width:32ch;font-style:italic;">Recenzje, koncerty, wywiady, newsy. Wszystko co brzmi w Polsce i&nbsp;o czym warto wiedzieć.</div>
+          <div style="display:flex;flex-direction:column;gap:2px;margin-top:40px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>Recenzje</span><span style="color:#8B857A;">247</span></a>
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>Koncerty</span><span style="color:#8B857A;">89</span></a>
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>Wywiady</span><span style="color:#8B857A;">312</span></a>
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>Newsy</span><span style="color:#8B857A;">1&nbsp;204</span></a>
+          </div>
+          <!-- VINYL -->
+          <div data-anim="vinyl" style="margin-top:56px;width:100%;aspect-ratio:1/1;max-width:340px;position:relative;">
+            <svg viewBox="0 0 200 200" style="width:100%;height:100%;overflow:visible;">
+              <defs>
+                <radialGradient id="tk-vinyl" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#141210"/>
+                  <stop offset="45%" stop-color="#0B0A08"/>
+                  <stop offset="46%" stop-color="#1a1815"/>
+                  <stop offset="100%" stop-color="#050403"/>
+                </radialGradient>
+              </defs>
+              <g data-vinyl-disc style="transform-origin:100px 100px;transform-box:fill-box;">
+                <circle cx="100" cy="100" r="98" fill="url(#tk-vinyl)"/>
+                <circle cx="100" cy="100" r="98" fill="none" stroke="#F2ECDD" stroke-opacity=".04" stroke-width="1"/>
+                <g fill="none" stroke="#F2ECDD" stroke-opacity=".08">
+                  <circle cx="100" cy="100" r="88"/>
+                  <circle cx="100" cy="100" r="80"/>
+                  <circle cx="100" cy="100" r="72"/>
+                  <circle cx="100" cy="100" r="64"/>
+                  <circle cx="100" cy="100" r="56"/>
+                  <circle cx="100" cy="100" r="48"/>
+                </g>
+                <!-- highlight sweep -->
+                <path d="M100 6 A94 94 0 0 1 194 100" stroke="#F2ECDD" stroke-opacity=".18" stroke-width="1" fill="none"/>
+                <!-- label -->
+                <circle cx="100" cy="100" r="34" fill="#E85D3C"/>
+                <circle cx="100" cy="100" r="34" fill="none" stroke="#0B0A08" stroke-opacity=".2"/>
+                <circle cx="100" cy="100" r="4" fill="#0B0A08"/>
+                <circle cx="100" cy="100" r="1.2" fill="#F2ECDD"/>
+              </g>
+              <!-- tone arm -->
+              <g data-vinyl-arm style="transform-origin:180px 20px;transform-box:fill-box;transform:rotate(-30deg);">
+                <line x1="180" y1="20" x2="120" y2="80" stroke="#F2ECDD" stroke-opacity=".8" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="180" cy="20" r="7" fill="#F2ECDD" fill-opacity=".9"/>
+                <rect x="112" y="76" width="14" height="10" rx="1" fill="#F2ECDD" fill-opacity=".9"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:64px;">
+
+          <!-- feature: album miesiąca -->
+          <a href="#" data-reveal style="display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;">
+            <div style="aspect-ratio:1/1;overflow:hidden;">
+              <image-slot id="muz-album" shape="rect" placeholder="Okładka albumu"></image-slot>
+            </div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:16px;">Recenzja · Album miesiąca</div>
+              <h3 style="font-family:'Playfair Display',serif;font-weight:400;font-size:52px;line-height:.98;letter-spacing:-.02em;margin:0 0 24px;text-wrap:balance;">Krajobraz <span style="font-style:italic;">po burzy</span></h3>
+              <p style="font-family:'Playfair Display',serif;font-size:18px;line-height:1.55;color:#B8B0A0;margin:0 0 28px;">Trzynaście utworów, żaden nie jest zbędny. To płyta, która nie próbuje się podobać — i&nbsp;dlatego zostaje w&nbsp;pamięci.</p>
+              <div style="display:flex;align-items:center;gap:24px;">
+                <div style="display:flex;align-items:baseline;gap:4px;">
+                  <span style="font-family:'Playfair Display',serif;font-size:64px;font-weight:300;line-height:1;">9,1</span>
+                  <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8B857A;">/ 10</span>
+                </div>
+                <div style="width:1px;height:48px;background:rgba(242,236,221,.15);"></div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;line-height:1.6;">
+                  Marcin Krawczyk<br>
+                  <span style="color:#F2ECDD;">Wrzesień 12, 2026</span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- 4 cards grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(242,236,221,.08);">
+            <article data-reveal style="background:#0B0A08;padding:36px 32px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;">Koncerty</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;">01</div>
+              </div>
+              <h4 style="font-family:'Playfair Display',serif;font-weight:400;font-size:28px;line-height:1.05;letter-spacing:-.01em;margin:0 0 14px;">Open'er 2026: pięć koncertów, które zmieniły festiwal</h4>
+              <p style="font-family:'Playfair Display',serif;font-size:15px;line-height:1.55;color:#8B857A;margin:0 0 20px;">Cztery dni w Gdyni, dwadzieścia jeden zespołów, dwa zaskoczenia, które nikomu nie schodzą z głowy.</p>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">Julia Nowak · 8 min</div>
+            </article>
+            <article data-reveal style="background:#0B0A08;padding:36px 32px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;">Wywiad</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;">02</div>
+              </div>
+              <h4 style="font-family:'Playfair Display',serif;font-weight:400;font-size:28px;line-height:1.05;letter-spacing:-.01em;margin:0 0 14px;">Kortez: „Nie piszę już dla wszystkich. Piszę dla tych, co słuchają"</h4>
+              <p style="font-family:'Playfair Display',serif;font-size:15px;line-height:1.55;color:#8B857A;margin:0 0 20px;">Długa rozmowa o wypaleniu, milczeniu, o tym, dlaczego przestał grać duże sceny.</p>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">Anna Wiśniewska · 14 min</div>
+            </article>
+            <article data-reveal style="background:#0B0A08;padding:36px 32px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;">Newsy</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;">03</div>
+              </div>
+              <h4 style="font-family:'Playfair Display',serif;font-weight:400;font-size:28px;line-height:1.05;letter-spacing:-.01em;margin:0 0 14px;">Nowości tygodnia: sześć nagrań, które musisz usłyszeć</h4>
+              <p style="font-family:'Playfair Display',serif;font-size:15px;line-height:1.55;color:#8B857A;margin:0 0 20px;">Od noise'owego debiutu po powrót legendy sceny alternatywnej. Tydzień w polskiej muzyce.</p>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">Redakcja · 5 min</div>
+            </article>
+            <article data-reveal style="background:#0B0A08;padding:36px 32px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px;">
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;">Recenzja</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;">04</div>
+              </div>
+              <h4 style="font-family:'Playfair Display',serif;font-weight:400;font-size:28px;line-height:1.05;letter-spacing:-.01em;margin:0 0 14px;">Sanah — „Kolędy Polskie 2". Świąteczny cynizm czy szczery gest?</h4>
+              <p style="font-family:'Playfair Display',serif;font-size:15px;line-height:1.55;color:#8B857A;margin:0 0 20px;">Druga część projektu, który podzielił krytyków. Sprawdzamy, czy ma sens poza sezonem świątecznym.</p>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">Piotr Dąbrowski · 6 min</div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PARALLAX GALLERY BREAK -->
+    <section data-parallax-section style="padding:120px 0;border-bottom:1px solid rgba(242,236,221,.08);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;gap:32px;">
+        <div style="display:flex;align-items:flex-end;gap:32px;">
+          <!-- MASK -->
+          <div data-anim="mask" style="width:140px;height:140px;flex-shrink:0;position:relative;">
+            <svg viewBox="0 0 200 200" style="width:100%;height:100%;overflow:visible;">
+              <!-- ribbons -->
+              <g data-mask-ribbon="L" stroke="#E85D3C" stroke-width="2" fill="none" style="transform-origin:22px 100px;transform-box:fill-box;">
+                <path d="M22 100 Q6 116 12 138 Q22 160 8 178"/>
+              </g>
+              <g data-mask-ribbon="R" stroke="#E85D3C" stroke-width="2" fill="none" style="transform-origin:178px 100px;transform-box:fill-box;">
+                <path d="M178 100 Q194 116 188 138 Q178 160 192 178"/>
+              </g>
+              <!-- mask body -->
+              <g data-mask-body style="transform-origin:100px 100px;transform-box:fill-box;">
+                <path d="M22 100 Q26 68 60 62 Q80 58 100 66 Q120 58 140 62 Q174 68 178 100 Q178 128 158 138 Q138 148 122 138 Q110 130 100 130 Q90 130 78 138 Q62 148 42 138 Q22 128 22 100 Z"
+                      fill="#141210" stroke="#F2ECDD" stroke-opacity=".75" stroke-width="1.5"/>
+                <!-- eye holes -->
+                <path d="M46 96 Q58 84 76 90 Q86 94 84 104 Q80 116 64 116 Q48 116 46 106 Z" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".5" stroke-width="1"/>
+                <path d="M116 90 Q134 84 154 96 Q154 106 152 108 Q150 116 136 116 Q120 116 116 104 Q114 94 116 90 Z" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".5" stroke-width="1"/>
+                <!-- teardrop -->
+                <path d="M74 116 Q74 124 78 130 Q80 132 82 130 Q84 124 82 118 Z" fill="#E85D3C"/>
+                <!-- ornaments -->
+                <path d="M100 66 Q98 76 100 90" stroke="#F2ECDD" stroke-opacity=".35" stroke-width="1" fill="none"/>
+                <circle cx="100" cy="90" r="2" fill="#E85D3C"/>
+                <path d="M32 92 Q40 86 48 88" stroke="#F2ECDD" stroke-opacity=".3" stroke-width="1" fill="none"/>
+                <path d="M152 88 Q160 86 168 92" stroke="#F2ECDD" stroke-opacity=".3" stroke-width="1" fill="none"/>
+              </g>
+            </svg>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:16px;">Galeria · Behind the scenes</div>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(40px,5vw,72px);letter-spacing:-.02em;margin:0;line-height:1;">Twarze <span style="font-style:italic;">tego tygodnia</span></h3>
+          </div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.14em;text-transform:uppercase;">Fotografia · 12 kadrów</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:16px;">
+        <div data-parallax="30" style="grid-column:1/5;aspect-ratio:3/4;overflow:hidden;"><image-slot id="gal-1" shape="rect" placeholder="Kadr 01"></image-slot></div>
+        <div data-parallax="-20" style="grid-column:5/9;aspect-ratio:1/1;overflow:hidden;margin-top:64px;"><image-slot id="gal-2" shape="rect" placeholder="Kadr 02"></image-slot></div>
+        <div data-parallax="50" style="grid-column:9/13;aspect-ratio:3/4;overflow:hidden;"><image-slot id="gal-3" shape="rect" placeholder="Kadr 03"></image-slot></div>
+        <div data-parallax="-40" style="grid-column:2/7;aspect-ratio:4/3;overflow:hidden;margin-top:-40px;"><image-slot id="gal-4" shape="rect" placeholder="Kadr 04"></image-slot></div>
+        <div data-parallax="25" style="grid-column:7/12;aspect-ratio:4/3;overflow:hidden;margin-top:40px;"><image-slot id="gal-5" shape="rect" placeholder="Kadr 05"></image-slot></div>
+      </div>
+    </section>
+
+    <!-- FILM -->
+    <section id="film" style="padding:120px 0;border-bottom:1px solid rgba(242,236,221,.08);">
+      <div style="display:grid;grid-template-columns:.9fr 2.4fr;gap:64px;align-items:start;margin-bottom:72px;">
+        <div style="position:sticky;top:110px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:20px;">Sekcja 02</div>
+          <h2 data-split="chars" style="font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(72px,10vw,168px);line-height:.86;letter-spacing:-.04em;margin:0;"><span style="font-style:italic;">Film</span></h2>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1.5;color:#8B857A;margin-top:32px;max-width:32ch;font-style:italic;">Nie recenzujemy premier. Piszemy o&nbsp;kinie, które ma coś do&nbsp;powiedzenia.</div>
+          <div style="display:flex;flex-direction:column;gap:2px;margin-top:40px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>Recenzje</span><span style="color:#8B857A;">184</span></a>
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>Newsy</span><span style="color:#8B857A;">896</span></a>
+          </div>
+          <!-- FILM CAMERA -->
+          <div data-anim="camera" style="margin-top:56px;width:100%;aspect-ratio:1/1;max-width:340px;position:relative;">
+            <svg viewBox="0 0 200 200" style="width:100%;height:100%;overflow:visible;">
+              <g data-cam-body>
+                <!-- body -->
+                <rect x="40" y="82" width="90" height="56" rx="4" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                <!-- lens -->
+                <rect x="128" y="94" width="34" height="32" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                <circle cx="145" cy="110" r="10" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                <circle cx="145" cy="110" r="5" fill="#E85D3C"/>
+                <!-- viewfinder -->
+                <rect x="52" y="72" width="26" height="14" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                <!-- reels -->
+                <g data-cam-reel data-dir="1" style="transform-origin:70px 60px;transform-box:fill-box;">
+                  <circle cx="70" cy="60" r="26" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                  <circle cx="70" cy="60" r="20" fill="none" stroke="#F2ECDD" stroke-opacity=".2"/>
+                  <circle cx="70" cy="60" r="4" fill="#F2ECDD" fill-opacity=".8"/>
+                  <line x1="70" y1="36" x2="70" y2="84" stroke="#F2ECDD" stroke-opacity=".3" stroke-width="1"/>
+                  <line x1="46" y1="60" x2="94" y2="60" stroke="#F2ECDD" stroke-opacity=".3" stroke-width="1"/>
+                </g>
+                <g data-cam-reel data-dir="-1" style="transform-origin:110px 60px;transform-box:fill-box;">
+                  <circle cx="110" cy="60" r="22" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                  <circle cx="110" cy="60" r="16" fill="none" stroke="#F2ECDD" stroke-opacity=".2"/>
+                  <circle cx="110" cy="60" r="3.5" fill="#F2ECDD" fill-opacity=".8"/>
+                  <line x1="110" y1="40" x2="110" y2="80" stroke="#F2ECDD" stroke-opacity=".3" stroke-width="1"/>
+                  <line x1="90" y1="60" x2="130" y2="60" stroke="#F2ECDD" stroke-opacity=".3" stroke-width="1"/>
+                </g>
+                <!-- handle -->
+                <rect x="60" y="138" width="10" height="20" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                <!-- REC dot -->
+                <circle data-cam-rec cx="55" cy="95" r="3" fill="#E85D3C"/>
+                <text x="63" y="98" fill="#F2ECDD" fill-opacity=".7" font-family="JetBrains Mono, monospace" font-size="6" letter-spacing="1">REC</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:48px;">
+          <!-- big film -->
+          <a href="#" data-reveal style="display:block;">
+            <div style="aspect-ratio:21/9;overflow:hidden;position:relative;margin-bottom:28px;">
+              <image-slot id="film-big" shape="rect" placeholder="Kadr filmowy — Kos"></image-slot>
+              <div style="position:absolute;bottom:24px;left:24px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:#F2ECDD;background:rgba(11,10,8,.85);padding:8px 12px;text-transform:uppercase;backdrop-filter:blur(4px);">2h 07min · Dramat historyczny · Reż. Michał Rosa</div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:end;">
+              <h3 style="font-family:'Playfair Display',serif;font-weight:400;font-size:56px;line-height:.98;letter-spacing:-.02em;margin:0;text-wrap:balance;">„Kos" — polskie kino ma <span style="font-style:italic;">nowego mistrza</span> formy</h3>
+              <div>
+                <p style="font-family:'Playfair Display',serif;font-size:16px;line-height:1.55;color:#B8B0A0;margin:0 0 18px;">Historia z&nbsp;1794 roku opowiedziana językiem 2026. Chłodno, bezkompromisowo, momentami nieznośnie pięknie.</p>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">Krzysztof Miller · Recenzja</div>
+              </div>
+            </div>
+          </a>
+
+          <!-- film list -->
+          <div style="display:flex;flex-direction:column;">
+            <div style="display:grid;grid-template-columns:80px 1fr 200px 100px;gap:32px;padding:20px 0;border-bottom:1px solid rgba(242,236,221,.08);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;">
+              <span>Nr</span><span>Tytuł</span><span>Kategoria</span><span style="text-align:right;">Ocena</span>
+            </div>
+            <a href="#" data-reveal style="display:grid;grid-template-columns:80px 1fr 200px 100px;gap:32px;padding:28px 0;border-bottom:1px solid rgba(242,236,221,.08);align-items:baseline;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8B857A;">01</span>
+              <span style="font-family:'Playfair Display',serif;font-size:26px;">Dziewczyna z&nbsp;igłą — chłodny majstersztyk z&nbsp;Danii</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#E85D3C;letter-spacing:.1em;text-transform:uppercase;">Recenzja</span>
+              <span style="font-family:'Playfair Display',serif;font-size:26px;text-align:right;">8,7</span>
+            </a>
+            <a href="#" data-reveal style="display:grid;grid-template-columns:80px 1fr 200px 100px;gap:32px;padding:28px 0;border-bottom:1px solid rgba(242,236,221,.08);align-items:baseline;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8B857A;">02</span>
+              <span style="font-family:'Playfair Display',serif;font-size:26px;">Cannes 2026 — pełna lista polskich akcentów</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#E85D3C;letter-spacing:.1em;text-transform:uppercase;">News</span>
+              <span style="font-family:'Playfair Display',serif;font-size:26px;text-align:right;color:#8B857A;">—</span>
+            </a>
+            <a href="#" data-reveal style="display:grid;grid-template-columns:80px 1fr 200px 100px;gap:32px;padding:28px 0;border-bottom:1px solid rgba(242,236,221,.08);align-items:baseline;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8B857A;">03</span>
+              <span style="font-family:'Playfair Display',serif;font-size:26px;">„Chleb i&nbsp;sól" — debiut, który wchodzi bez zapowiedzi</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#E85D3C;letter-spacing:.1em;text-transform:uppercase;">Recenzja</span>
+              <span style="font-family:'Playfair Display',serif;font-size:26px;text-align:right;">7,9</span>
+            </a>
+            <a href="#" data-reveal style="display:grid;grid-template-columns:80px 1fr 200px 100px;gap:32px;padding:28px 0;border-bottom:1px solid rgba(242,236,221,.08);align-items:baseline;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8B857A;">04</span>
+              <span style="font-family:'Playfair Display',serif;font-size:26px;">Skolimowski kończy zdjęcia. Premiera zapowiedziana na wiosnę</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#E85D3C;letter-spacing:.1em;text-transform:uppercase;">News</span>
+              <span style="font-family:'Playfair Display',serif;font-size:26px;text-align:right;color:#8B857A;">—</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPORT -->
+    <section id="sport" style="padding:120px 0;border-bottom:1px solid rgba(242,236,221,.08);">
+      <div style="display:grid;grid-template-columns:.9fr 2.4fr;gap:64px;align-items:start;margin-bottom:72px;">
+        <div style="position:sticky;top:110px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:20px;">Sekcja 03</div>
+          <h2 data-split="chars" style="font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(72px,10vw,168px);line-height:.86;letter-spacing:-.04em;margin:0;">Sp<span style="font-style:italic;">or</span>t</h2>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1.5;color:#8B857A;margin-top:32px;max-width:32ch;font-style:italic;">MMA i&nbsp;boks. Bez klepania po ramieniu, bez PR-owych bzdur.</div>
+          <div style="display:flex;flex-direction:column;gap:2px;margin-top:40px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>MMA</span><span style="color:#8B857A;">143</span></a>
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>Boks</span><span style="color:#8B857A;">98</span></a>
+          </div>
+          <!-- PUNCHING BAG -->
+          <div data-anim="bag" style="margin-top:56px;width:100%;aspect-ratio:1/1;max-width:340px;position:relative;">
+            <svg viewBox="0 0 200 220" style="width:100%;height:100%;overflow:visible;">
+              <!-- ceiling mount -->
+              <line x1="10" y1="14" x2="190" y2="14" stroke="#F2ECDD" stroke-opacity=".25" stroke-width="1.5"/>
+              <rect x="92" y="10" width="16" height="8" fill="#F2ECDD" fill-opacity=".5"/>
+              <!-- swinging assembly -->
+              <g data-bag-swing style="transform-origin:100px 18px;transform-box:fill-box;">
+                <!-- chain -->
+                <g stroke="#F2ECDD" stroke-opacity=".55" stroke-width="1.4" fill="none">
+                  <path d="M100 18 L100 30"/>
+                  <ellipse cx="100" cy="34" rx="4" ry="3"/>
+                  <ellipse cx="100" cy="40" rx="3" ry="4"/>
+                  <ellipse cx="100" cy="46" rx="4" ry="3"/>
+                  <ellipse cx="100" cy="52" rx="3" ry="4"/>
+                  <ellipse cx="100" cy="58" rx="4" ry="3"/>
+                </g>
+                <!-- strap ring -->
+                <path d="M84 66 Q100 60 116 66 L114 76 L86 76 Z" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.4"/>
+                <!-- bag body -->
+                <path d="M76 78 Q70 90 72 108 L72 168 Q72 186 100 190 Q128 186 128 168 L128 108 Q130 90 124 78 Z"
+                      fill="#E85D3C" stroke="#0B0A08" stroke-width="1.5"/>
+                <!-- highlights -->
+                <path d="M82 92 Q80 108 82 140" stroke="#0B0A08" stroke-opacity=".25" stroke-width="1" fill="none"/>
+                <path d="M118 92 Q120 108 118 140" stroke="#F2ECDD" stroke-opacity=".18" stroke-width="1" fill="none"/>
+                <!-- straps -->
+                <line x1="72" y1="118" x2="128" y2="118" stroke="#0B0A08" stroke-opacity=".4" stroke-width="1.2"/>
+                <line x1="72" y1="152" x2="128" y2="152" stroke="#0B0A08" stroke-opacity=".4" stroke-width="1.2"/>
+                <!-- brand -->
+                <text x="100" y="138" text-anchor="middle" fill="#0B0A08" font-family="JetBrains Mono, monospace" font-size="7" letter-spacing="2">TK</text>
+              </g>
+              <!-- impact burst on hit side -->
+              <g data-bag-impact style="transform-origin:135px 130px;transform-box:fill-box;" opacity="0">
+                <path d="M135 118 L142 126 L152 122 L146 132 L156 138 L144 138 L142 148 L134 140 L124 144 L130 134 L120 128 L132 128 Z" fill="#F2ECDD" fill-opacity=".9"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;">
+          <a href="#" data-reveal style="display:flex;flex-direction:column;">
+            <div style="aspect-ratio:4/5;overflow:hidden;margin-bottom:24px;position:relative;">
+              <image-slot id="sport-mma" shape="rect" placeholder="Materla — trening"></image-slot>
+              <div style="position:absolute;top:20px;left:20px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:#F2ECDD;background:#E85D3C;padding:6px 10px;text-transform:uppercase;">MMA · Reportaż</div>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:400;font-size:36px;line-height:1;letter-spacing:-.02em;margin:0 0 16px;">Materla wraca po pięciu latach. „Wiem, że wyglądam inaczej"</h3>
+            <p style="font-family:'Playfair Display',serif;font-size:16px;line-height:1.55;color:#8B857A;margin:0 0 18px;">Byliśmy w&nbsp;Gliwicach na treningu otwartym. Rozmawialiśmy o&nbsp;tym, po co się wraca, kiedy nie musisz.</p>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">Jakub Sowiński · 11 min</div>
+          </a>
+          <a href="#" data-reveal style="display:flex;flex-direction:column;">
+            <div style="aspect-ratio:4/5;overflow:hidden;margin-bottom:24px;position:relative;">
+              <image-slot id="sport-boks" shape="rect" placeholder="Adamek — portret"></image-slot>
+              <div style="position:absolute;top:20px;left:20px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:#F2ECDD;background:#E85D3C;padding:6px 10px;text-transform:uppercase;">Boks · Sylwetka</div>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:400;font-size:36px;line-height:1;letter-spacing:-.02em;margin:0 0 16px;">Adamek ogłasza koniec. Zostaje po nim <span style="font-style:italic;">epoka</span></h3>
+            <p style="font-family:'Playfair Display',serif;font-size:16px;line-height:1.55;color:#8B857A;margin:0 0 18px;">Dwadzieścia lat, trzy dywizje, jedna dekada niemożliwych walk. Portret najtwardszego polskiego boksera.</p>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">Maciej Lisowski · 16 min</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- upcoming events strip -->
+      <div style="border-top:1px solid rgba(242,236,221,.08);padding-top:32px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;">Nadchodzące</div>
+          <a href="#" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;">Cały kalendarz →</a>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(242,236,221,.08);">
+          <div style="background:#0B0A08;padding:28px;">
+            <div style="font-family:'Playfair Display',serif;font-size:48px;font-weight:300;line-height:1;letter-spacing:-.02em;">28.09</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;margin:12px 0 16px;letter-spacing:.08em;text-transform:uppercase;">Sobota · Gliwice · MMA</div>
+            <div style="font-family:'Playfair Display',serif;font-size:22px;line-height:1.15;">KSW 92: Materla vs&nbsp;Soldić</div>
+          </div>
+          <div style="background:#0B0A08;padding:28px;">
+            <div style="font-family:'Playfair Display',serif;font-size:48px;font-weight:300;line-height:1;letter-spacing:-.02em;">12.10</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;margin:12px 0 16px;letter-spacing:.08em;text-transform:uppercase;">Sobota · Kraków · Boks</div>
+            <div style="font-family:'Playfair Display',serif;font-size:22px;line-height:1.15;">Gala Polsat Boxing: Kabayel — Wach</div>
+          </div>
+          <div style="background:#0B0A08;padding:28px;">
+            <div style="font-family:'Playfair Display',serif;font-size:48px;font-weight:300;line-height:1;letter-spacing:-.02em;">02.11</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;margin:12px 0 16px;letter-spacing:.08em;text-transform:uppercase;">Niedziela · Łódź · MMA</div>
+            <div style="font-family:'Playfair Display',serif;font-size:22px;line-height:1.15;">FEN 55: Turniej wagi półśredniej</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRY -->
+    <section id="gry" style="padding:120px 0;border-bottom:1px solid rgba(242,236,221,.08);">
+      <div style="display:grid;grid-template-columns:.9fr 2.4fr;gap:64px;align-items:start;margin-bottom:72px;">
+        <div style="position:sticky;top:110px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:20px;">Sekcja 04</div>
+          <h2 data-split="chars" style="font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(72px,10vw,168px);line-height:.86;letter-spacing:-.04em;margin:0;"><span style="font-style:italic;">Gr</span>y</h2>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1.5;color:#8B857A;margin-top:32px;max-width:32ch;font-style:italic;">Recenzje i&nbsp;zapowiedzi. Bez punktacji z&nbsp;metacritic, z&nbsp;własnym zdaniem.</div>
+          <div style="display:flex;flex-direction:column;gap:2px;margin-top:40px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>Recenzje</span><span style="color:#8B857A;">76</span></a>
+            <a href="#" style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(242,236,221,.1);"><span>Zapowiedzi</span><span style="color:#8B857A;">51</span></a>
+          </div>
+          <!-- GAMEPAD -->
+          <div data-anim="gamepad" style="margin-top:56px;width:100%;aspect-ratio:1/1;max-width:340px;position:relative;">
+            <svg viewBox="0 0 220 200" style="width:100%;height:100%;overflow:visible;">
+              <g data-pad-body style="transform-origin:110px 110px;transform-box:fill-box;">
+                <!-- shape -->
+                <path d="M40 80 Q50 60 78 62 L142 62 Q170 60 180 80 Q198 118 178 138 Q160 152 144 138 L134 128 L86 128 L76 138 Q60 152 42 138 Q22 118 40 80 Z" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                <!-- D-pad -->
+                <g data-pad-dpad style="transform-origin:66px 100px;transform-box:fill-box;">
+                  <rect x="60" y="86" width="12" height="28" rx="1.5" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".5" stroke-width="1"/>
+                  <rect x="52" y="94" width="28" height="12" rx="1.5" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".5" stroke-width="1"/>
+                </g>
+                <!-- buttons -->
+                <circle data-pad-btn="1" cx="150" cy="86" r="6" fill="#0B0A08" stroke="#E85D3C" stroke-width="1.5"/>
+                <circle data-pad-btn="2" cx="166" cy="100" r="6" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                <circle data-pad-btn="3" cx="150" cy="114" r="6" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                <circle data-pad-btn="4" cx="134" cy="100" r="6" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1.5"/>
+                <!-- sticks -->
+                <circle cx="94" cy="118" r="10" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".5" stroke-width="1"/>
+                <circle data-pad-stick="L" cx="94" cy="118" r="6" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1"/>
+                <circle cx="122" cy="118" r="10" fill="#0B0A08" stroke="#F2ECDD" stroke-opacity=".5" stroke-width="1"/>
+                <circle data-pad-stick="R" cx="122" cy="118" r="6" fill="#141210" stroke="#F2ECDD" stroke-opacity=".7" stroke-width="1"/>
+                <!-- center led -->
+                <rect x="106" y="80" width="8" height="2" rx="1" fill="#E85D3C"/>
+                <text x="110" y="76" text-anchor="middle" fill="#8B857A" font-family="JetBrains Mono, monospace" font-size="5" letter-spacing="1">TK-01</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:48px;">
+          <a href="#" data-reveal style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;">
+            <div style="aspect-ratio:16/9;overflow:hidden;">
+              <image-slot id="gry-1" shape="rect" placeholder="Cronos — screenshot"></image-slot>
+            </div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:14px;">Recenzja · Bloober Team</div>
+              <h3 style="font-family:'Playfair Display',serif;font-weight:400;font-size:44px;line-height:1;letter-spacing:-.02em;margin:0 0 18px;">Cronos: The New Dawn — Bloober <span style="font-style:italic;">dorasta</span></h3>
+              <p style="font-family:'Playfair Display',serif;font-size:16px;line-height:1.55;color:#B8B0A0;margin:0 0 20px;">Pierwszy raz od dawna polskie studio robi grę, która nie próbuje być niczym innym. I&nbsp;to działa.</p>
+              <div style="display:flex;align-items:baseline;gap:14px;">
+                <span style="font-family:'Playfair Display',serif;font-size:44px;font-weight:300;">8,4</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;">/ 10</span>
+              </div>
+            </div>
+          </a>
+          <a href="#" data-reveal style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;">
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:14px;">Zapowiedź · gamescom 2026</div>
+              <h3 style="font-family:'Playfair Display',serif;font-weight:400;font-size:44px;line-height:1;letter-spacing:-.02em;margin:0 0 18px;">Co pokazała Polska na <span style="font-style:italic;">gamescom</span></h3>
+              <p style="font-family:'Playfair Display',serif;font-size:16px;line-height:1.55;color:#B8B0A0;margin:0 0 20px;">Jedenaście studiów, cztery zaskoczenia, jedno rozczarowanie. Podsumowanie polskiej obecności w&nbsp;Kolonii.</p>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">Tomasz Wróbel · 9 min</div>
+            </div>
+            <div style="aspect-ratio:16/9;overflow:hidden;">
+              <image-slot id="gry-2" shape="rect" placeholder="Gamescom stoisko"></image-slot>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MANIFEST / PULL QUOTE -->
+    <section data-reveal style="padding:160px 0;text-align:center;border-bottom:1px solid rgba(242,236,221,.08);">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:32px;">Manifest</div>
+      <blockquote style="font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(36px,5vw,72px);line-height:1.05;letter-spacing:-.02em;max-width:22ch;margin:0 auto;text-wrap:balance;">
+        Piszemy o&nbsp;kulturze <span style="font-style:italic;color:#E85D3C;">tak</span>, jak sami chcielibyśmy o&nbsp;niej czytać.
+      </blockquote>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;margin-top:40px;">— Redakcja Twarzy Kultury, wrzesień 2026</div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section style="padding:100px 0;border-bottom:1px solid rgba(242,236,221,.08);">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:20px;">Newsletter</div>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:300;font-size:56px;line-height:1;letter-spacing:-.02em;margin:0 0 20px;">Co niedzielę o&nbsp;9:00.</h3>
+          <p style="font-family:'Playfair Display',serif;font-size:18px;line-height:1.55;color:#8B857A;margin:0;max-width:38ch;">Sześć tekstów, jeden album, jeden film, jedna walka. Bez reklam, bez śmiecia.</p>
+        </div>
+        <form style="display:flex;flex-direction:column;gap:16px;" onsubmit="event.preventDefault()">
+          <div style="display:flex;gap:12px;border-bottom:1px solid rgba(242,236,221,.2);padding-bottom:14px;">
+            <input type="email" placeholder="twoj@email.pl" style="flex:1;background:transparent;border:0;outline:0;color:#F2ECDD;font-family:'Playfair Display',serif;font-size:22px;">
+            <button type="submit" style="background:#E85D3C;color:#0B0A08;border:0;padding:12px 28px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-weight:500;">Zapisz się →</button>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:#8B857A;text-transform:uppercase;">Ponad 14&nbsp;800 czytelników · Możesz się wypisać w&nbsp;każdej chwili</div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer style="padding:80px 32px 40px;max-width:1600px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,236,221,.08);">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:32px;letter-spacing:-.02em;"><span style="font-style:italic;">Twarze</span> Kultury</div>
+        <p style="font-family:'Playfair Display',serif;font-size:15px;color:#8B857A;line-height:1.5;margin:18px 0 0;max-width:34ch;">Niezależny magazyn kulturalny. Muzyka, film, sport, gry — piszemy o tym, co warto oglądać, słuchać i&nbsp;o czym warto mówić.</p>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;margin-bottom:16px;">Sekcje</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-family:'Playfair Display',serif;font-size:15px;">
+          <a href="#muzyka">Muzyka</a><a href="#film">Film</a><a href="#sport">Sport</a><a href="#gry">Gry</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;margin-bottom:16px;">Redakcja</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-family:'Playfair Display',serif;font-size:15px;">
+          <a href="#">O nas</a><a href="#">Kontakt</a><a href="#">Współpraca</a><a href="#">Reklama</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;margin-bottom:16px;">Śledź</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-family:'Playfair Display',serif;font-size:15px;">
+          <a href="#">Instagram</a><a href="#">YouTube</a><a href="#">Spotify</a><a href="#">RSS</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;margin-bottom:16px;">Prawne</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-family:'Playfair Display',serif;font-size:15px;">
+          <a href="#">Regulamin</a><a href="#">Polityka prywatności</a><a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding-top:32px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8B857A;text-transform:uppercase;">
+      <span>© 2026 Twarze Kultury. Wszystkie prawa zastrzeżone.</span>
+      <span>Made in PL · Wydanie 47</span>
+    </div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    const root = this.dcRoot || document;
+    const { gsap, ScrollTrigger } = window;
+    if (!gsap || !ScrollTrigger) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Manual SplitText — chars
+    root.querySelectorAll('[data-split="chars"]').forEach(el => {
+      if (el.dataset.splitDone) return;
+      el.dataset.splitDone = '1';
+      const walk = (node) => {
+        const children = Array.from(node.childNodes);
+        children.forEach(c => {
+          if (c.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            [...c.textContent].forEach(ch => {
+              if (ch === ' ') { frag.appendChild(document.createTextNode(' ')); return; }
+              const s = document.createElement('span');
+              s.textContent = ch;
+              s.style.display = 'inline-block';
+              s.style.willChange = 'transform,opacity';
+              frag.appendChild(s);
+            });
+            c.replaceWith(frag);
+          } else if (c.nodeType === 1) {
+            walk(c);
+          }
+        });
+      };
+      walk(el);
+      const chars = el.querySelectorAll('span');
+      gsap.from(chars, {
+        yPercent: 110, opacity: 0, duration: 1.1, ease: 'expo.out',
+        stagger: { each: 0.02, from: 'start' },
+        scrollTrigger: { trigger: el, start: 'top 85%' }
+      });
+    });
+
+    // Lines split for hero H1
+    root.querySelectorAll('[data-split="lines"]').forEach(el => {
+      if (el.dataset.splitDone) return;
+      el.dataset.splitDone = '1';
+      // wrap each word for stagger
+      const walk = (node) => {
+        Array.from(node.childNodes).forEach(c => {
+          if (c.nodeType === 3) {
+            const words = c.textContent.split(/(\s+)/);
+            const frag = document.createDocumentFragment();
+            words.forEach(w => {
+              if (/^\s+$/.test(w)) { frag.appendChild(document.createTextNode(w)); return; }
+              if (w === '') return;
+              const s = document.createElement('span');
+              s.textContent = w;
+              s.style.display = 'inline-block';
+              s.style.willChange = 'transform,opacity';
+              frag.appendChild(s);
+            });
+            c.replaceWith(frag);
+          } else if (c.nodeType === 1 && !c.dataset.splitSkip) {
+            walk(c);
+          }
+        });
+      };
+      walk(el);
+      const words = el.querySelectorAll('span');
+      gsap.from(words, {
+        yPercent: 120, opacity: 0, duration: 1.2, ease: 'expo.out',
+        stagger: 0.035,
+        scrollTrigger: { trigger: el, start: 'top 90%' }
+      });
+    });
+
+    // Reveal on scroll
+    root.querySelectorAll('[data-reveal]').forEach(el => {
+      gsap.from(el, {
+        y: 60, opacity: 0, duration: 1.1, ease: 'expo.out',
+        scrollTrigger: { trigger: el, start: 'top 88%' }
+      });
+    });
+
+    // Parallax gallery
+    root.querySelectorAll('[data-parallax]').forEach(el => {
+      const amt = parseFloat(el.dataset.parallax) || 0;
+      gsap.fromTo(el, { y: amt }, {
+        y: -amt, ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+    });
+
+    // VINYL — obraca się na scroll przez sekcję Muzyka
+    const vinylBox = root.querySelector('[data-anim="vinyl"]');
+    if (vinylBox) {
+      const disc = vinylBox.querySelector('[data-vinyl-disc]');
+      const arm = vinylBox.querySelector('[data-vinyl-arm]');
+      const muzyka = root.querySelector('#muzyka');
+      gsap.to(disc, {
+        rotation: 720, transformOrigin: '100px 100px', ease: 'none',
+        scrollTrigger: { trigger: muzyka, start: 'top bottom', end: 'bottom top', scrub: 1 }
+      });
+      gsap.fromTo(arm, { rotation: -30, transformOrigin: '180px 20px' },
+        { rotation: 10, transformOrigin: '180px 20px', ease: 'power2.inOut',
+          scrollTrigger: { trigger: muzyka, start: 'top 70%', end: 'top 20%', scrub: 1 }
+        });
+      gsap.from(vinylBox, {
+        scale: 0.6, opacity: 0, rotation: -40, duration: 1.2, ease: 'expo.out',
+        scrollTrigger: { trigger: muzyka, start: 'top 75%' }
+      });
+    }
+
+    // CAMERA — reels obracają się, REC pulsuje, całość wjeżdża
+    const camBox = root.querySelector('[data-anim="camera"]');
+    if (camBox) {
+      const film = root.querySelector('#film');
+      const reels = camBox.querySelectorAll('[data-cam-reel]');
+      reels.forEach(r => {
+        const dir = parseFloat(r.dataset.dir) || 1;
+        gsap.to(r, {
+          rotation: 720 * dir, ease: 'none',
+          scrollTrigger: { trigger: film, start: 'top bottom', end: 'bottom top', scrub: 1 }
+        });
+      });
+      const rec = camBox.querySelector('[data-cam-rec]');
+      gsap.to(rec, { opacity: 0.2, duration: 0.7, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+      gsap.from(camBox, {
+        x: -80, opacity: 0, duration: 1.2, ease: 'expo.out',
+        scrollTrigger: { trigger: film, start: 'top 75%' }
+      });
+      gsap.to(camBox.querySelector('[data-cam-body]'), {
+        rotation: 8, transformOrigin: '100px 110px', ease: 'none',
+        scrollTrigger: { trigger: film, start: 'top bottom', end: 'bottom top', scrub: 2 }
+      });
+    }
+
+    // MASK — Twarze tego tygodnia
+    const maskBox = root.querySelector('[data-anim="mask"]');
+    if (maskBox) {
+      const parallaxSec = root.querySelector('[data-parallax-section]');
+      const body = maskBox.querySelector('[data-mask-body]');
+      const ribL = maskBox.querySelector('[data-mask-ribbon="L"]');
+      const ribR = maskBox.querySelector('[data-mask-ribbon="R"]');
+      gsap.from(maskBox, {
+        y: 40, opacity: 0, rotation: -20, scale: 0.7, duration: 1.2, ease: 'expo.out',
+        scrollTrigger: { trigger: parallaxSec, start: 'top 80%' }
+      });
+      // idle float + tilt
+      gsap.to(body, {
+        rotation: 4, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut',
+        transformOrigin: '100px 100px'
+      });
+      gsap.to(maskBox, {
+        y: -8, duration: 2.4, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+      // ribbons flutter
+      gsap.to(ribL, { rotation: 8, duration: 1.6, repeat: -1, yoyo: true, ease: 'sine.inOut', transformOrigin: '22px 100px' });
+      gsap.to(ribR, { rotation: -8, duration: 1.6, repeat: -1, yoyo: true, ease: 'sine.inOut', transformOrigin: '178px 100px', delay: 0.4 });
+      // scroll rotation through section
+      gsap.to(body, {
+        rotation: '+=18', ease: 'none', transformOrigin: '100px 100px',
+        scrollTrigger: { trigger: parallaxSec, start: 'top bottom', end: 'bottom top', scrub: 1.4 }
+      });
+    }
+
+    // PUNCHING BAG — buja się i dostaje ciosy
+    const bagBox = root.querySelector('[data-anim="bag"]');
+    if (bagBox) {
+      const sport = root.querySelector('#sport');
+      const swing = bagBox.querySelector('[data-bag-swing]');
+      const impact = bagBox.querySelector('[data-bag-impact]');
+      gsap.from(bagBox, {
+        y: -30, opacity: 0, duration: 1.1, ease: 'expo.out',
+        scrollTrigger: { trigger: sport, start: 'top 75%' }
+      });
+      // subtle idle sway
+      gsap.to(swing, {
+        rotation: 3, duration: 2.2, repeat: -1, yoyo: true, ease: 'sine.inOut',
+        transformOrigin: '100px 18px'
+      });
+      // punch loop
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.8,
+        scrollTrigger: { trigger: sport, start: 'top 85%', toggleActions: 'play pause resume pause' }
+      });
+      tl.to(swing, { rotation: -14, duration: 0.18, ease: 'power3.out', transformOrigin: '100px 18px' })
+        .to(impact, { opacity: 1, scale: 1.4, duration: 0.14, ease: 'power2.out', transformOrigin: '135px 130px' }, '<')
+        .to(impact, { opacity: 0, scale: 0.6, duration: 0.3, ease: 'power2.in', transformOrigin: '135px 130px' })
+        .to(swing, { rotation: 8, duration: 0.9, ease: 'elastic.out(1,0.4)', transformOrigin: '100px 18px' }, '<-0.1')
+        .to(swing, { rotation: 0, duration: 0.6, ease: 'sine.inOut', transformOrigin: '100px 18px' });
+      // scroll drift
+      gsap.to(swing, {
+        rotation: '+=6', ease: 'none', transformOrigin: '100px 18px',
+        scrollTrigger: { trigger: sport, start: 'top bottom', end: 'bottom top', scrub: 2 }
+      });
+    }
+
+    // GAMEPAD — tilty, guziki mrugają, sticki się kręcą
+    const padBox = root.querySelector('[data-anim="gamepad"]');
+    if (padBox) {
+      const gry = root.querySelector('#gry');
+      gsap.from(padBox, {
+        y: 80, opacity: 0, rotation: -12, duration: 1.2, ease: 'expo.out',
+        scrollTrigger: { trigger: gry, start: 'top 75%' }
+      });
+      gsap.to(padBox.querySelector('[data-pad-body]'), {
+        rotation: 14, transformOrigin: '110px 110px', ease: 'none',
+        scrollTrigger: { trigger: gry, start: 'top bottom', end: 'bottom top', scrub: 1.2 }
+      });
+      // stick jitter
+      const sticks = padBox.querySelectorAll('[data-pad-stick]');
+      sticks.forEach((s, i) => {
+        gsap.to(s, { x: 'random(-3,3)', y: 'random(-3,3)', duration: 0.6, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: i * 0.2 });
+      });
+      // buttons blink
+      const btns = padBox.querySelectorAll('[data-pad-btn]');
+      const btnTl = gsap.timeline({ repeat: -1 });
+      btns.forEach(b => {
+        btnTl.to(b, { fill: '#E85D3C', duration: 0.12 })
+             .to(b, { fill: '#0B0A08', duration: 0.28, delay: 0.15 });
+      });
+      // dpad wiggle
+      gsap.to(padBox.querySelector('[data-pad-dpad]'), {
+        rotation: 8, duration: 0.4, repeat: -1, yoyo: true, ease: 'power1.inOut', transformOrigin: '66px 100px'
+      });
+    }
+
+    // Refresh once fonts settle
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => ScrollTrigger.refresh());
+    }
+  }
+}
+</script>
+</body>
+</html>

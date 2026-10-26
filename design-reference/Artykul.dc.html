@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="./image-slot.js"></script>
+<style>
+  @keyframes tk-grain { 0%{transform:translate(0,0)} 20%{transform:translate(-3%,2%)} 40%{transform:translate(2%,-4%)} 60%{transform:translate(-2%,3%)} 80%{transform:translate(3%,-2%)} 100%{transform:translate(0,0)} }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: #E85D3C; }
+  ::selection { background: #E85D3C; color: #0B0A08; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #0B0A08; color: #F2ECDD; font-family: 'Inter Tight', system-ui, sans-serif; }
+  .tk-nav-item { position: relative; }
+  .tk-nav-item > .tk-drop { position:absolute; top:calc(100% + 14px); right:0; min-width:220px; background:#0B0A08; border:1px solid rgba(242,236,221,.1); padding:8px 0; opacity:0; pointer-events:none; transform:translateY(-6px); transition:opacity .22s ease, transform .22s ease; z-index:120; }
+  .tk-nav-item:hover > .tk-drop, .tk-nav-item:focus-within > .tk-drop { opacity:1; pointer-events:auto; transform:translateY(0); }
+  .tk-drop a { display:flex; justify-content:space-between; padding:12px 18px; font-size:11px; letter-spacing:.08em; color:#F2ECDD; }
+  .tk-drop a:hover { background:rgba(232,93,60,.08); color:#E85D3C; }
+  .tk-drop a span:last-child { color:#8B857A; font-size:10px; }
+  .tk-nav-item > a[data-cat]::after { content:'▾'; margin-left:6px; font-size:9px; opacity:.6; }
+  .tk-article p { font-family:'Playfair Display',serif; font-size:20px; line-height:1.65; color:#D8D2C4; margin:0 0 28px; }
+  .tk-article p:first-of-type::first-letter { font-family:'Playfair Display',serif; font-weight:400; float:left; font-size:96px; line-height:.85; padding:6px 12px 0 0; color:#E85D3C; }
+  .tk-article h2 { font-family:'Playfair Display',serif; font-weight:400; font-size:36px; line-height:1.1; margin:56px 0 24px; letter-spacing:-.02em; }
+  .tk-article blockquote { font-family:'Playfair Display',serif; font-style:italic; font-size:32px; line-height:1.25; margin:48px 0; padding-left:32px; border-left:2px solid #E85D3C; color:#F2ECDD; }
+</style>
+</helmet>
+
+<div style="position:relative;background:#0B0A08;color:#F2ECDD;min-height:100vh;overflow-x:hidden;font-family:'Inter Tight',system-ui,sans-serif;">
+
+  <div style="position:fixed;inset:-50%;pointer-events:none;z-index:200;opacity:.08;mix-blend-mode:overlay;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/></svg>');animation:tk-grain 1.6s steps(6) infinite;"></div>
+  <div style="position:fixed;inset:0;pointer-events:none;z-index:150;background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,.55) 100%);"></div>
+
+  <!-- reading progress bar -->
+  <div style="position:fixed;top:0;left:0;height:2px;background:#E85D3C;z-index:250;width:0%;" data-progress></div>
+
+  <header style="position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);background:rgba(11,10,8,.72);border-bottom:1px solid rgba(242,236,221,.08);">
+    <div style="max-width:1600px;margin:0 auto;padding:18px 32px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:32px;">
+      <div style="display:flex;align-items:center;gap:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;">
+        <span style="width:8px;height:8px;background:#E85D3C;border-radius:50%;box-shadow:0 0 12px #E85D3C;"></span>
+        <span>Na żywo · Wydanie 47</span>
+      </div>
+      <a href="./Twarze Kultury.dc.html" style="font-family:'Playfair Display',serif;font-weight:500;font-size:26px;letter-spacing:-.02em;font-style:italic;">Twarze <span style="font-style:normal;font-weight:300;">Kultury</span></a>
+      <nav style="display:flex;justify-content:flex-end;gap:28px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;align-items:center;">
+        <div class="tk-nav-item"><a href="./Kategoria.dc.html?cat=muzyka" data-cat>Muzyka</a>
+          <div class="tk-drop">
+            <a href="./Kategoria.dc.html?cat=muzyka"><span>Wszystkie</span><span>1852</span></a>
+            <a href="./Kategoria.dc.html?cat=muzyka&sub=recenzje"><span>Recenzje</span><span>247</span></a>
+            <a href="./Kategoria.dc.html?cat=muzyka&sub=koncerty"><span>Koncerty</span><span>89</span></a>
+            <a href="./Kategoria.dc.html?cat=muzyka&sub=wywiady"><span>Wywiady</span><span>312</span></a>
+            <a href="./Kategoria.dc.html?cat=muzyka&sub=newsy"><span>Newsy</span><span>1204</span></a>
+          </div>
+        </div>
+        <div class="tk-nav-item"><a href="./Kategoria.dc.html?cat=film" data-cat>Film</a>
+          <div class="tk-drop">
+            <a href="./Kategoria.dc.html?cat=film"><span>Wszystkie</span><span>1080</span></a>
+            <a href="./Kategoria.dc.html?cat=film&sub=recenzje"><span>Recenzje</span><span>184</span></a>
+            <a href="./Kategoria.dc.html?cat=film&sub=newsy"><span>Newsy</span><span>896</span></a>
+          </div>
+        </div>
+        <div class="tk-nav-item"><a href="./Kategoria.dc.html?cat=sport" data-cat>Sport</a>
+          <div class="tk-drop">
+            <a href="./Kategoria.dc.html?cat=sport"><span>Wszystkie</span><span>241</span></a>
+            <a href="./Kategoria.dc.html?cat=sport&sub=mma"><span>MMA</span><span>143</span></a>
+            <a href="./Kategoria.dc.html?cat=sport&sub=boks"><span>Boks</span><span>98</span></a>
+          </div>
+        </div>
+        <div class="tk-nav-item"><a href="./Kategoria.dc.html?cat=gry" data-cat>Gry</a>
+          <div class="tk-drop">
+            <a href="./Kategoria.dc.html?cat=gry"><span>Wszystkie</span><span>127</span></a>
+            <a href="./Kategoria.dc.html?cat=gry&sub=recenzje"><span>Recenzje</span><span>76</span></a>
+            <a href="./Kategoria.dc.html?cat=gry&sub=zapowiedzi"><span>Zapowiedzi</span><span>51</span></a>
+          </div>
+        </div>
+        <a href="#" style="color:#E85D3C;">Prenumerata</a>
+      </nav>
+    </div>
+  </header>
+
+  <main style="max-width:1200px;margin:0 auto;padding:0 32px;">
+
+    <!-- BREADCRUMB -->
+    <div style="padding:32px 0 0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#8B857A;text-transform:uppercase;">
+      <a href="./Twarze Kultury.dc.html">Twarze Kultury</a>
+      <span style="margin:0 12px;">/</span>
+      <a href="./Kategoria.dc.html?cat=muzyka">Muzyka</a>
+      <span style="margin:0 12px;">/</span>
+      <a href="./Kategoria.dc.html?cat=muzyka&sub=wywiady">Wywiady</a>
+    </div>
+
+    <!-- TITLE BLOCK -->
+    <section style="padding:64px 0 48px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:32px;">Wywiad · Muzyka</div>
+      <h1 style="font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(48px,7vw,112px);line-height:.95;letter-spacing:-.03em;margin:0 0 32px;text-wrap:balance;">Mrozu o&nbsp;milczeniu, ojcostwie i&nbsp;<span style="font-style:italic;">płycie</span>, której nikt się nie spodziewał</h1>
+      <p style="font-family:'Playfair Display',serif;font-size:22px;line-height:1.5;color:#B8B0A0;margin:0;max-width:60ch;font-style:italic;">Przez półtora roku nie wypuścił niczego. Wrócił z&nbsp;materiałem, który dzieli fanów na dwa obozy. Rozmawialiśmy o&nbsp;tym, czy artysta ma prawo do ciszy.</p>
+      <div style="display:flex;gap:24px;margin-top:40px;padding-top:24px;border-top:1px solid rgba(242,236,221,.08);font-family:'JetBrains Mono',monospace;font-size:11px;color:#8B857A;letter-spacing:.08em;text-transform:uppercase;">
+        <span>Aleksandra Zych</span><span>·</span><span>12 min czytania</span><span>·</span><span>13 września 2026</span><span>·</span><a href="#" style="color:#E85D3C;">Udostępnij</a>
+      </div>
+    </section>
+
+    <!-- HERO IMAGE -->
+    <div style="aspect-ratio:16/9;overflow:hidden;margin-bottom:64px;">
+      <image-slot id="art-hero" shape="rect" placeholder="Zdjęcie główne artykułu"></image-slot>
+    </div>
+
+    <!-- BODY -->
+    <article class="tk-article" style="max-width:68ch;margin:0 auto;">
+      <p>Umówiliśmy się w&nbsp;kawiarni na Pradze, o&nbsp;której nikt poza kilkoma osobami nie wie. Mrozu przychodzi trzy minuty przed czasem, w&nbsp;zwykłym t-shircie, bez ochrony, bez managera. „Chciałem, żeby to była zwykła rozmowa" — mówi na wstępie. I&nbsp;dotrzymuje słowa.</p>
+
+      <p>Przez ostatnie półtora roku był w&nbsp;stanie, który sam nazywa „cichym trybem". Nie wypuszczał muzyki, nie dawał wywiadów, nie pojawiał się na festiwalach. Fani spekulowali — kryzys, choroba, rozstanie z&nbsp;wytwórnią. Prawda okazała się prostsza i&nbsp;bardziej banalna.</p>
+
+      <blockquote>„Zdałem sobie sprawę, że jak nie mam nic do powiedzenia, to najlepiej nie mówić nic".</blockquote>
+
+      <p>Nowa płyta, „Nikt nie pyta o&nbsp;pogodę", powstawała w&nbsp;domowym studiu przez rok. Bez zespołu producenckiego, bez ekipy piszącej teksty, bez A&amp;R-owców z&nbsp;wytwórni. Efekt jest szorstki, chwilami niepokojący — i&nbsp;na pewno nie próbuje wpaść do playlist z&nbsp;kawiarnianym popem.</p>
+
+      <h2>„Nie chciałem robić czegoś, co brzmi jak reszta"</h2>
+
+      <p>Kiedy pytam, czy nie boi się reakcji, wzrusza ramionami. „Zaryzykowałem raz przy „Aktorach", zaryzykowałem drugi raz. Teraz to jest kolejna próba. Może ostatnia" — dodaje z&nbsp;uśmiechem, którego trudno rozszyfrować.</p>
+
+      <p>Rozmawiamy o&nbsp;ojcostwie, o&nbsp;tym, jak zmieniło jego stosunek do pisania tekstów. „Nie mogę już pisać rzeczy, które są nieprawdziwe. Mój syn kiedyś to przeczyta". Zapytany o&nbsp;konkretne piosenki, długo się zastanawia, w&nbsp;końcu wskazuje trzy, które są „dla niego, a&nbsp;nie o&nbsp;nim".</p>
+
+      <h2>Płyta, która nie próbuje się podobać</h2>
+
+      <p>Trzynaście utworów. Żaden nie trwa dłużej niż cztery minuty. Produkcja — minimalistyczna, momentami wręcz brutalna w&nbsp;swojej surowości. „Chciałem, żeby to brzmiało tak, jakby ktoś nagrał to jednym uchem, w&nbsp;pokoju obok".</p>
+
+      <p>Krytycy podzielili się na dwa obozy — jedni piszą o&nbsp;„najodważniejszej płycie w&nbsp;polskim mainstreamie od dekady", inni o&nbsp;„manierze i&nbsp;pretensjonalności". Mrozu nie czyta recenzji. „Serio. Wiesz, ile lat mi zajęło, żeby przestać".</p>
+
+      <blockquote>„Nie muszę być lubiany. Muszę być prawdziwy. Reszta to jest robota, nie moja rzecz".</blockquote>
+
+      <p>Pytany o&nbsp;plany, mówi ostrożnie. Trasa jesienna — tak. Kolaboracje — może. Kolejna płyta — nie w&nbsp;najbliższych dwóch latach. „Bo znowu nie mam nic do powiedzenia. I&nbsp;dobrze".</p>
+
+      <p>Wychodzi po godzinie i&nbsp;piętnastu minutach. Płaci za swoją kawę, dziękuje kelnerce po imieniu, znika w&nbsp;bocznej uliczce. Zostaję sam z&nbsp;dyktafonem i&nbsp;pytaniem, na które nie miałam już czasu — czy artysta ma prawo do ciszy.</p>
+
+      <p>Chyba już wiem.</p>
+    </article>
+
+    <!-- TAGS + AUTHOR -->
+    <section style="max-width:68ch;margin:80px auto 0;padding:32px 0;border-top:1px solid rgba(242,236,221,.08);border-bottom:1px solid rgba(242,236,221,.08);">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;">
+        <span style="padding:8px 12px;border:1px solid rgba(242,236,221,.15);color:#8B857A;">Mrozu</span>
+        <span style="padding:8px 12px;border:1px solid rgba(242,236,221,.15);color:#8B857A;">Wywiad</span>
+        <span style="padding:8px 12px;border:1px solid rgba(242,236,221,.15);color:#8B857A;">Nowa płyta</span>
+        <span style="padding:8px 12px;border:1px solid rgba(242,236,221,.15);color:#8B857A;">Polski pop</span>
+      </div>
+    </section>
+
+    <!-- RELATED -->
+    <section style="padding:80px 0;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;margin-bottom:32px;">Czytaj dalej</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(242,236,221,.08);">
+        <a href="./Artykul.dc.html" style="background:#0B0A08;padding:28px;display:flex;flex-direction:column;gap:12px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;margin-bottom:12px;"><image-slot id="rel-1" shape="rect" placeholder="Powiązany 1"></image-slot></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;">Muzyka · Wywiad</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;line-height:1.15;">Kortez: „Nie piszę już dla wszystkich"</div>
+        </a>
+        <a href="./Artykul.dc.html" style="background:#0B0A08;padding:28px;display:flex;flex-direction:column;gap:12px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;margin-bottom:12px;"><image-slot id="rel-2" shape="rect" placeholder="Powiązany 2"></image-slot></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;">Muzyka · Recenzja</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;line-height:1.15;">Krajobraz po burzy — album miesiąca</div>
+        </a>
+        <a href="./Artykul.dc.html" style="background:#0B0A08;padding:28px;display:flex;flex-direction:column;gap:12px;">
+          <div style="aspect-ratio:16/9;overflow:hidden;margin-bottom:12px;"><image-slot id="rel-3" shape="rect" placeholder="Powiązany 3"></image-slot></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:#E85D3C;text-transform:uppercase;">Muzyka · Koncerty</div>
+          <div style="font-family:'Playfair Display',serif;font-size:22px;line-height:1.15;">Open'er 2026: pięć koncertów, które zmieniły festiwal</div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="padding:80px 32px 40px;max-width:1600px;margin:0 auto;border-top:1px solid rgba(242,236,221,.08);">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:24px;">
+      <div style="font-family:'Playfair Display',serif;font-size:26px;letter-spacing:-.02em;"><span style="font-style:italic;">Twarze</span> Kultury</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:#8B857A;text-transform:uppercase;">© 2026 · Wszystkie prawa zastrzeżone</div>
+    </div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    const root = this.dcRoot || document;
+    const bar = root.querySelector('[data-progress]');
+    const onScroll = () => {
+      const h = document.documentElement;
+      const pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      if (bar) bar.style.width = Math.max(0, Math.min(1, pct)) * 100 + '%';
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    this._onScroll = onScroll;
+    onScroll();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+  }
+}
+</script>
+</body>
+</html>

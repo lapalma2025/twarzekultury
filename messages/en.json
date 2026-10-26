@@ -1,0 +1,101 @@
+{
+  "nav": {
+    "all": "All",
+    "langSwitch": "Change language",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu"
+  },
+  "home": {
+    "ticker": [
+      "Cannes 2026 — three Polish films in the main competition",
+      "KSW 92 sells out in 47 minutes",
+      "Bloober Team announces new project for 2027",
+      "Open'er confirms first headliner"
+    ],
+    "heroTitlePre": "Faces",
+    "heroTitleIta": "behind",
+    "heroTitlePost": "Polish culture —",
+    "heroTitleGray": "no filters.",
+    "weekFace": "Face of the week",
+    "bottomStrip": [
+      { "kicker": "Cannes 2026", "text": "Three Polish titles in the main competition" },
+      { "kicker": "Cronos", "text": "Bloober Team comes of age — first impressions" },
+      { "kicker": "Open'er", "text": "First headliner confirmed, already sparking controversy" },
+      { "kicker": "Boxing", "text": "Adamek announces retirement — an era comes to an end" }
+    ],
+    "sectionLabel": "Section",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "gallery": {
+      "kicker": "Gallery · Behind the scenes",
+      "titlePre": "Faces",
+      "titleIta": "of the week",
+      "meta": "Photography · 12 frames"
+    },
+    "upcoming": {
+      "kicker": "Upcoming",
+      "cta": "Full calendar →",
+      "events": [
+        { "date": "Sep 28", "meta": "Saturday · Gliwice · MMA", "title": "KSW 92: Materla vs Soldić" },
+        { "date": "Oct 12", "meta": "Saturday · Kraków · Boxing", "title": "Polsat Boxing Night: Kabayel — Wach" },
+        { "date": "Nov 02", "meta": "Sunday · Łódź · MMA", "title": "FEN 55: Welterweight Tournament" }
+      ]
+    },
+    "manifest": {
+      "kicker": "Manifesto",
+      "quotePre": "We write about culture the",
+      "quoteIta": "way",
+      "quotePost": "we'd want to read about it ourselves.",
+      "signature": "— The Twarze Kultury editors, September 2026"
+    }
+  },
+  "category": {
+    "materialsCount": "Articles",
+    "updatedToday": "Updated · Today",
+    "featured": "Featured",
+    "allItems": "All",
+    "items": "items",
+    "sort": "Sort · Newest ↓",
+    "prev": "← Previous",
+    "next": "Next →"
+  },
+  "article": {
+    "share": "Share",
+    "readMore": "Keep reading",
+    "minRead": "min read"
+  },
+  "footer": {
+    "tagline": "An independent culture magazine. Music, film, sport, games — we write about what's worth watching, listening to, and talking about.",
+    "sections": "Sections",
+    "editorial": "Editorial",
+    "contact": "Contact",
+    "adminLabel": "Administrator",
+    "follow": "Follow",
+    "followLinks": ["Instagram", "YouTube", "Spotify", "RSS"],
+    "legal": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "cookieSettings": "Cookie settings",
+    "rights": "© 2026 Twarze Kultury. All rights reserved.",
+    "edition": "Made in PL · Issue 47"
+  },
+  "cookies": {
+    "badge": "Privacy",
+    "title": "We respect your privacy",
+    "intro": "We use necessary cookies to run the site, and optional ones for preferences, analytics and marketing. You can accept all, reject optional cookies, or choose categories. Details in the",
+    "policyLink": "Cookie Policy",
+    "acceptAll": "Accept all",
+    "rejectOptional": "Necessary only",
+    "customize": "Customize",
+    "saveChoices": "Save choices",
+    "necessaryTitle": "Necessary",
+    "necessaryDesc": "Required for the site to work and to remember your consent choice.",
+    "preferencesTitle": "Preferences",
+    "preferencesDesc": "Remember settings such as language or display.",
+    "analyticsTitle": "Analytics",
+    "analyticsDesc": "Help us understand how you use the Service — only with consent.",
+    "marketingTitle": "Marketing",
+    "marketingDesc": "Used for personalized messages or ads — only with consent."
+  }
+}

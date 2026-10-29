@@ -56,7 +56,7 @@ export function MusicSection({ locale, articles, limit = 4 }: { locale: Locale; 
           {feature && (
             <Reveal as="a" href={`/artykul/${feature.slug[locale]}`} className="tk-feature-grid" style={{ display: 'grid', gap: 32, alignItems: 'center' }}>
               <div style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
-                <ImageSlot src={feature.coverImageUrl} alt={feature.title[locale]} placeholder="Okładka albumu" objectPosition={feature.coverImagePosition} />
+                <ImageSlot src={feature.coverImageUrl} alt={feature.title[locale]} placeholder="Okładka albumu" objectPosition={feature.coverImagePosition} sizes="(max-width: 720px) 100vw, 42vw" />
               </div>
               <div>
                 <div style={{ fontFamily: fontFamily.mono, fontSize: 11, letterSpacing: '.14em', color: colors.accent, textTransform: 'uppercase', marginBottom: 16 }}>
@@ -77,7 +77,9 @@ export function MusicSection({ locale, articles, limit = 4 }: { locale: Locale; 
                   <div style={{ fontFamily: fontFamily.mono, fontSize: 11, color: colors.muted, letterSpacing: '.08em', textTransform: 'uppercase', lineHeight: 1.6 }}>
                     {feature.author}
                     <br />
-                    <span style={{ color: colors.fg }}>{new Date(feature.publishedAt ?? feature.createdAt).toLocaleDateString(locale)}</span>
+                    <span style={{ color: colors.fg }}>
+                      {new Date(feature.publishedAt ?? feature.createdAt).toLocaleDateString(locale === 'en' ? 'en-US' : 'pl-PL')}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -91,7 +93,7 @@ export function MusicSection({ locale, articles, limit = 4 }: { locale: Locale; 
               <Reveal as="article" key={a.id} style={{ background: colors.bg, padding: '0 0 36px' }}>
                 <Link href={`/artykul/${a.slug[locale]}`}>
                   <div style={{ aspectRatio: '16/9', overflow: 'hidden', marginBottom: 24 }}>
-                    <ImageSlot src={a.coverImageUrl} alt={a.title[locale]} placeholder="Ilustracja" objectPosition={a.coverImagePosition} />
+                    <ImageSlot src={a.coverImageUrl} alt={a.title[locale]} placeholder="Ilustracja" objectPosition={a.coverImagePosition} sizes="(max-width: 640px) 100vw, 50vw" />
                   </div>
                   <div style={{ padding: '0 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 20 }}>
                     <div style={{ fontFamily: fontFamily.mono, fontSize: 11, letterSpacing: '.14em', color: colors.accent, textTransform: 'uppercase' }}>
@@ -111,7 +113,7 @@ export function MusicSection({ locale, articles, limit = 4 }: { locale: Locale; 
               <Reveal as="article" key={a.id} style={{ background: colors.bg, padding: '0 0 36px' }}>
                 <Link href={`/artykul/${a.slug[locale]}`}>
                   <div style={{ aspectRatio: '16/9', overflow: 'hidden', marginBottom: 24 }}>
-                    <ImageSlot src={a.coverImageUrl} alt={a.title[locale]} placeholder="Ilustracja" objectPosition={a.coverImagePosition} />
+                    <ImageSlot src={a.coverImageUrl} alt={a.title[locale]} placeholder="Ilustracja" objectPosition={a.coverImagePosition} sizes="(max-width: 640px) 100vw, 50vw" />
                   </div>
                   <div style={{ padding: '0 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 20 }}>
                     <div style={{ fontFamily: fontFamily.mono, fontSize: 11, letterSpacing: '.14em', color: colors.accent, textTransform: 'uppercase' }}>

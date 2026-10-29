@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { ImageSlot } from '@/components/ImageSlot';
 import { ReadingProgress } from '@/components/ReadingProgress';
 import { colors, fontFamily } from '@/lib/theme';
-import { getArticleBySlug, listArticles } from '@/lib/data/articles';
+import { getArticleBySlug, listRelatedArticles } from '@/lib/data/articles';
 import { getCategory, getSubcategoryLabel } from '@/lib/data/categories';
 import { renderArticleBody } from '@/lib/markdown';
 import { absoluteUrl, buildPageMetadata, siteUrl } from '@/lib/seo';
@@ -58,9 +58,7 @@ export default async function ArticlePage({ params }: Props) {
   const cat = getCategory(article.category)!;
   const bodyHtml = renderArticleBody(article.body[loc]);
 
-  const related = (await listArticles({ status: 'published', category: article.category }))
-    .filter((a) => a.id !== article.id)
-    .slice(0, 3);
+  const related = await listRelatedArticles(article.category, article.id, 3);
 
   const dateFmt = new Intl.DateTimeFormat(loc === 'pl' ? 'pl-PL' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -130,7 +128,7 @@ export default async function ArticlePage({ params }: Props) {
       </section>
 
       <div style={{ aspectRatio: '4/3', overflow: 'hidden', marginBottom: 64 }}>
-        <ImageSlot src={article.coverImageUrl} alt={article.title[loc]} placeholder="Zdjęcie główne artykułu" objectPosition={article.coverImagePosition} priority />
+        <ImageSlot src={article.coverImageUrl} alt={article.title[loc]} placeholder="Zdjęcie główne artykułu" objectPosition={article.coverImagePosition} sizes="(max-width: 900px) 100vw, 900px" quality={78} priority />
       </div>
 
       <article className="tk-article" style={{ maxWidth: '68ch', margin: '0 auto' }} dangerouslySetInnerHTML={{ __html: bodyHtml }} />
@@ -154,7 +152,7 @@ export default async function ArticlePage({ params }: Props) {
             {related.map((r) => (
               <Link key={r.id} href={`/artykul/${r.slug[loc]}`} style={{ background: colors.bg, padding: 28, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div style={{ aspectRatio: '16/9', overflow: 'hidden', marginBottom: 12 }}>
-                  <ImageSlot src={r.coverImageUrl} alt={r.title[loc]} placeholder="Powiązany" objectPosition={r.coverImagePosition} />
+                  <ImageSlot src={r.coverImageUrl} alt={r.title[loc]} placeholder="Powiązany" objectPosition={r.coverImagePosition} sizes="(max-width: 640px) 100vw, 280px" />
                 </div>
                 <div style={{ fontFamily: fontFamily.mono, fontSize: 10, letterSpacing: '.14em', color: colors.accent, textTransform: 'uppercase' }}>
                   {cat.label[loc]} · {getSubcategoryLabel(r.category, r.subcategory, loc)}

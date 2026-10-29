@@ -1,14 +1,36 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { CATEGORIES } from '@/lib/data/categories';
 import { slugify } from '@/lib/slug';
 import { colors, fontFamily } from '@/lib/theme';
 import { CoverImageUploader } from './CoverImageUploader';
-import { MarkdownEditor } from './MarkdownEditor';
 import type { Article } from '@/lib/types';
 import type { ArticleFormState } from './actions';
+
+const RichTextEditor = dynamic(
+  () => import('./RichTextEditor').then((m) => m.RichTextEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        style={{
+          border: `1px solid ${colors.line3}`,
+          borderRadius: 6,
+          minHeight: 360,
+          padding: 24,
+          color: colors.muted,
+          fontFamily: fontFamily.mono,
+          fontSize: 12,
+        }}
+      >
+        Ładowanie edytora…
+      </div>
+    ),
+  },
+);
 
 const inputStyle: React.CSSProperties = {
   background: 'transparent', border: `1px solid ${colors.line3}`, color: colors.fg,
@@ -56,6 +78,12 @@ interface ArticleFormProps {
 export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) {
   const [state, formAction] = useFormState(action, {});
   const [lang, setLang] = useState<'pl' | 'en'>('pl');
+  const [category, setCategory] = useState(initial?.category ?? CATEGORIES[0].key);
+  const [subcategory, setSubcategory] = useState(
+    initial?.subcategory
+      ?? CATEGORIES.find((c) => c.key === (initial?.category ?? CATEGORIES[0].key))?.subcategories[0]?.key
+      ?? '',
+  );
   const [titlePl, setTitlePl] = useState(initial?.title.pl ?? '');
   const [titleEn, setTitleEn] = useState(initial?.title.en ?? '');
   const [slugPl, setSlugPl] = useState(initial?.slug.pl ?? '');
@@ -63,24 +91,54 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
   const [slugPlTouched, setSlugPlTouched] = useState(Boolean(initial));
   const [slugEnTouched, setSlugEnTouched] = useState(Boolean(initial));
 
+  const currentCat = CATEGORIES.find((c) => c.key === category) ?? CATEGORIES[0];
+  const subs = currentCat.subcategories;
+
   return (
-    <form action={formAction} style={{ display: 'flex', flexDirection: 'column', gap: 28, maxWidth: 760 }}>
-      <div style={{ ...fieldStyle, maxWidth: 280 }}>
-        <label style={labelStyle} htmlFor="category">
-          Kategoria
-        </label>
-        <select
-          id="category"
-          name="category"
-          defaultValue={initial?.category ?? CATEGORIES[0].key}
-          style={selectStyle}
-        >
-          {CATEGORIES.map((c) => (
-            <option key={c.key} value={c.key} style={optionStyle}>
-              {c.label.pl}
-            </option>
-          ))}
-        </select>
+    <form action={formAction} style={{ display: 'flex', flexDirection: 'column', gap: 28, maxWidth: 920 }}>
+      <div className="tk-form-row-2" style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 280px))' }}>
+        <div style={fieldStyle}>
+          <label style={labelStyle} htmlFor="category">
+            Kategoria
+          </label>
+          <select
+            id="category"
+            name="category"
+            value={category}
+            onChange={(e) => {
+              const next = e.target.value as typeof category;
+              setCategory(next);
+              const nextSubs = CATEGORIES.find((c) => c.key === next)?.subcategories ?? [];
+              setSubcategory(nextSubs.some((s) => s.key === subcategory) ? subcategory : nextSubs[0]?.key ?? '');
+            }}
+            style={selectStyle}
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c.key} value={c.key} style={optionStyle}>
+                {c.label.pl}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div style={fieldStyle}>
+          <label style={labelStyle} htmlFor="subcategory">
+            Podkategoria
+          </label>
+          <select
+            id="subcategory"
+            name="subcategory"
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+            required
+            style={selectStyle}
+          >
+            {subs.map((s) => (
+              <option key={s.key} value={s.key} style={optionStyle}>
+                {s.label.pl}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div style={{ display: 'flex', gap: 8, borderBottom: `1px solid ${colors.line3}` }}>
@@ -139,7 +197,7 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
           </label>
           <textarea id="leadPl" name="leadPl" rows={2} defaultValue={initial?.lead.pl ?? ''} style={{ ...inputStyle, resize: 'vertical' }} />
         </div>
-        <MarkdownEditor id="bodyPl" name="bodyPl" label="Treść (PL)" defaultValue={initial?.body.pl ?? ''} required rows={16} />
+        <RichTextEditor id="bodyPl" name="bodyPl" label="Treść (PL)" defaultValue={initial?.body.pl ?? ''} required />
       </div>
 
       <div style={{ display: lang === 'en' ? 'flex' : 'none', flexDirection: 'column', gap: 20 }}>
@@ -181,7 +239,7 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
           </label>
           <textarea id="leadEn" name="leadEn" rows={2} defaultValue={initial?.lead.en ?? ''} style={{ ...inputStyle, resize: 'vertical' }} />
         </div>
-        <MarkdownEditor id="bodyEn" name="bodyEn" label="Treść (EN)" defaultValue={initial?.body.en ?? ''} required rows={16} />
+        <RichTextEditor id="bodyEn" name="bodyEn" label="Treść (EN)" defaultValue={initial?.body.en ?? ''} required />
       </div>
 
       <div style={fieldStyle}>

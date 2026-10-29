@@ -1,7 +1,9 @@
 import 'server-only';
+import { cache } from 'react';
 import type { Article, ArticleInput, Category } from '@/lib/types';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createPublicSupabaseClient } from '@/lib/supabase/public';
 import { localStore } from './local-store';
 
 /**
@@ -21,8 +23,8 @@ type Row = {
   title_en: string;
   lead_pl: string;
   lead_en: string;
-  body_pl: string;
-  body_en: string;
+  body_pl?: string;
+  body_en?: string;
   cover_image_url: string | null;
   cover_image_position: string | null;
   author: string;
@@ -36,6 +38,10 @@ type Row = {
   updated_at: string;
 };
 
+/** Columns for cards / lists — never pull full article bodies over the wire. */
+const LIST_COLUMNS =
+  'id, category, subcategory, slug_pl, slug_en, title_pl, title_en, lead_pl, lead_en, cover_image_url, cover_image_position, author, reading_time_min, rating, tags, status, featured, published_at, created_at, updated_at';
+
 function rowToArticle(r: Row): Article {
   return {
     id: r.id,
@@ -44,7 +50,7 @@ function rowToArticle(r: Row): Article {
     slug: { pl: r.slug_pl, en: r.slug_en },
     title: { pl: r.title_pl, en: r.title_en },
     lead: { pl: r.lead_pl, en: r.lead_en },
-    body: { pl: r.body_pl, en: r.body_en },
+    body: { pl: r.body_pl ?? '', en: r.body_en ?? '' },
     coverImageUrl: r.cover_image_url,
     coverImagePosition: r.cover_image_position,
     author: r.author,
@@ -95,6 +101,50 @@ export interface ListFilter {
   status?: 'draft' | 'published';
   category?: Category;
   subcategory?: string;
+  /** Cap rows (related articles, homepage slices). */
+  limit?: number;
+}
+
+export type CategoryCounts = {
+  /** Published articles per main category. */
+  byCategory: Record<Category, number>;
+  /** Published articles per subcategory, keyed `${category}:${subcategory}`. */
+  bySubcategory: Record<string, number>;
+};
+
+/** Lightweight counts for nav / section labels — no article bodies. */
+export async function getPublishedCategoryCounts(): Promise<CategoryCounts> {
+  const empty: CategoryCounts = {
+    byCategory: { muzyka: 0, film: 0, sport: 0, gry: 0 },
+    bySubcategory: {},
+  };
+
+  let rows: Array<{ category: Category; subcategory: string | null }>;
+
+  if (!isSupabaseConfigured()) {
+    rows = localStore
+      .list()
+      .filter((a) => a.status === 'published')
+      .map((a) => ({ category: a.category, subcategory: a.subcategory }));
+  } else {
+    const supabase = createPublicSupabaseClient();
+    const { data, error } = await supabase
+      .from('articles')
+      .select('category, subcategory')
+      .eq('status', 'published');
+    if (error) throw error;
+    rows = (data ?? []) as Array<{ category: Category; subcategory: string | null }>;
+  }
+
+  const counts = empty;
+  for (const row of rows) {
+    counts.byCategory[row.category] = (counts.byCategory[row.category] ?? 0) + 1;
+    if (row.subcategory) {
+      const key = `${row.category}:${row.subcategory}`;
+      counts.bySubcategory[key] = (counts.bySubcategory[key] ?? 0) + 1;
+    }
+  }
+  return counts;
 }
 
 export async function listArticles(filter: ListFilter = {}): Promise<Article[]> {
@@ -103,15 +153,50 @@ export async function listArticles(filter: ListFilter = {}): Promise<Article[]> 
     if (filter.status) items = items.filter((a) => a.status === filter.status);
     if (filter.category) items = items.filter((a) => a.category === filter.category);
     if (filter.subcategory) items = items.filter((a) => a.subcategory === filter.subcategory);
-    return items.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt));
+    items = items.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt));
+    return filter.limit ? items.slice(0, filter.limit) : items;
   }
 
-  const supabase = await createServerSupabaseClient();
-  let query = supabase.from('articles').select('*').order('published_at', { ascending: false, nullsFirst: false });
+  // Published-only lists: anon client (no cookies → faster, cacheable).
+  // Anything else (admin drafts): cookie session client for RLS.
+  const supabase =
+    filter.status === 'published' ? createPublicSupabaseClient() : await createServerSupabaseClient();
+
+  let query = supabase
+    .from('articles')
+    .select(LIST_COLUMNS)
+    .order('published_at', { ascending: false, nullsFirst: false });
   if (filter.status) query = query.eq('status', filter.status);
   if (filter.category) query = query.eq('category', filter.category);
   if (filter.subcategory) query = query.eq('subcategory', filter.subcategory);
+  if (filter.limit) query = query.limit(filter.limit);
   const { data, error } = await query;
+  if (error) throw error;
+  return (data as Row[]).map(rowToArticle);
+}
+
+export async function listRelatedArticles(
+  category: Category,
+  excludeId: string,
+  limit = 3,
+): Promise<Article[]> {
+  if (!isSupabaseConfigured()) {
+    return localStore
+      .list()
+      .filter((a) => a.status === 'published' && a.category === category && a.id !== excludeId)
+      .sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt))
+      .slice(0, limit);
+  }
+
+  const supabase = createPublicSupabaseClient();
+  const { data, error } = await supabase
+    .from('articles')
+    .select(LIST_COLUMNS)
+    .eq('status', 'published')
+    .eq('category', category)
+    .neq('id', excludeId)
+    .order('published_at', { ascending: false, nullsFirst: false })
+    .limit(limit);
   if (error) throw error;
   return (data as Row[]).map(rowToArticle);
 }
@@ -124,14 +209,15 @@ export async function getArticleById(id: string): Promise<Article | null> {
   return data ? rowToArticle(data as Row) : null;
 }
 
-export async function getArticleBySlug(locale: 'pl' | 'en', slug: string): Promise<Article | null> {
+/** Deduped per request so generateMetadata + page share one Supabase round-trip. */
+export const getArticleBySlug = cache(async (locale: 'pl' | 'en', slug: string): Promise<Article | null> => {
   if (!isSupabaseConfigured()) return localStore.getBySlug(locale, slug);
-  const supabase = await createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   const column = locale === 'pl' ? 'slug_pl' : 'slug_en';
   const { data, error } = await supabase.from('articles').select('*').eq(column, slug).maybeSingle();
   if (error) throw error;
   return data ? rowToArticle(data as Row) : null;
-}
+});
 
 export async function createArticle(input: ArticleInput): Promise<Article> {
   if (!isSupabaseConfigured()) return localStore.create(input);

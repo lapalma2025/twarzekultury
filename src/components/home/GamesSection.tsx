@@ -14,7 +14,7 @@ export function GamesSection({ locale, articles, limit = 2 }: { locale: Locale; 
   const row = (a: Article, i: number) => {
     const media = (
       <div className="tk-games-media" style={{ aspectRatio: '16/9', overflow: 'hidden' }}>
-        <ImageSlot src={a.coverImageUrl} alt={a.title[locale]} placeholder="Screenshot" objectPosition={a.coverImagePosition} />
+        <ImageSlot src={a.coverImageUrl} alt={a.title[locale]} placeholder="Screenshot" objectPosition={a.coverImagePosition} sizes="(max-width: 720px) 100vw, 50vw" />
       </div>
     );
     const text = (

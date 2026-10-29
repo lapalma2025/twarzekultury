@@ -21,6 +21,7 @@
 /data/db.json
 /data/settings.json
 /data/gallery.json
+/data/admin-credentials.json
 /public/uploads/
 
 # supabase cli

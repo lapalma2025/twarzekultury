@@ -134,8 +134,9 @@ export function CoverImageUploader({
         {pending && <span style={{ fontFamily: fontFamily.mono, fontSize: 11, color: colors.muted }}>Wgrywanie…</span>}
       </div>
       <input
-        type="url"
-        placeholder="…albo wklej URL zdjęcia"
+        type="text"
+        inputMode="url"
+        placeholder="…albo wklej URL / ścieżkę zdjęcia"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         style={{ background: 'transparent', border: `1px solid ${colors.line3}`, color: colors.fg, padding: '8px 10px', fontSize: 13, maxWidth: 360 }}

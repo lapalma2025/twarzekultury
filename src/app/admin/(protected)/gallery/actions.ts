@@ -14,6 +14,10 @@ export interface GalleryFormState {
 const frameSchema = z.object({
   slot: z.coerce.number().int().min(1).max(5),
   imageUrl: z.string().max(2000).nullable(),
+  imagePosition: z
+    .string()
+    .trim()
+    .regex(/^\d{1,3}(?:\.\d+)?% \d{1,3}(?:\.\d+)?%$/, 'Nieprawidłowa pozycja kadru.'),
   altPl: z.string().max(200),
   altEn: z.string().max(200),
   parallax: z.coerce.number().int().min(-100).max(100),
@@ -25,9 +29,11 @@ export async function updateGalleryAction(_prev: GalleryFormState, formData: For
   const frames: GalleryFrame[] = [];
   for (let slot = 1; slot <= 5; slot++) {
     const imageUrlRaw = String(formData.get(`imageUrl_${slot}`) ?? '').trim();
+    const positionRaw = String(formData.get(`imagePosition_${slot}`) ?? '').trim();
     const parsed = frameSchema.safeParse({
       slot,
       imageUrl: imageUrlRaw || null,
+      imagePosition: positionRaw || '50% 20%',
       altPl: formData.get(`altPl_${slot}`) ?? '',
       altEn: formData.get(`altEn_${slot}`) ?? '',
       parallax: formData.get(`parallax_${slot}`) ?? 0,
@@ -38,6 +44,7 @@ export async function updateGalleryAction(_prev: GalleryFormState, formData: For
     frames.push({
       slot: parsed.data.slot as GalleryFrame['slot'],
       imageUrl: parsed.data.imageUrl,
+      imagePosition: parsed.data.imagePosition || '50% 20%',
       alt: { pl: parsed.data.altPl, en: parsed.data.altEn },
       parallax: parsed.data.parallax,
     });

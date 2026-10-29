@@ -14,7 +14,7 @@ export function SportSection({ locale, articles, limit = 2 }: { locale: Locale; 
   const card = (a: Article) => (
     <Reveal as="a" key={a.id} href={`/artykul/${a.slug[locale]}`} style={{ display: 'flex', flexDirection: 'column' }}>
       <div style={{ aspectRatio: '4/5', overflow: 'hidden', marginBottom: 24, position: 'relative' }}>
-        <ImageSlot src={a.coverImageUrl} alt={a.title[locale]} placeholder={a.title[locale]} objectPosition={a.coverImagePosition} />
+        <ImageSlot src={a.coverImageUrl} alt={a.title[locale]} placeholder={a.title[locale]} objectPosition={a.coverImagePosition} sizes="(max-width: 720px) 100vw, 42vw" />
         <div style={{ position: 'absolute', top: 20, left: 20, fontFamily: fontFamily.mono, fontSize: 10, letterSpacing: '.16em', color: colors.fg, background: colors.accent, padding: '6px 10px', textTransform: 'uppercase' }}>
           {getSubcategoryLabel('sport', a.subcategory, locale)}
         </div>

@@ -6,11 +6,15 @@
 create table if not exists public.gallery_frames (
   slot int primary key check (slot between 1 and 5),
   image_url text,
+  image_position text not null default '50% 20%',
   alt_pl text not null default '',
   alt_en text not null default '',
   parallax int not null default 0,
   updated_at timestamptz not null default now()
 );
+
+alter table public.gallery_frames
+  add column if not exists image_position text not null default '50% 20%';
 
 drop trigger if exists gallery_frames_set_updated_at on public.gallery_frames;
 create trigger gallery_frames_set_updated_at

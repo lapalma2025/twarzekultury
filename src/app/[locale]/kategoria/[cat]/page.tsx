@@ -120,7 +120,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         <section style={{ padding: '72px 0', borderBottom: `1px solid ${colors.line}` }}>
           <Reveal as="a" href={`/artykul/${featured.slug[loc]}`} className="tk-cat-featured-grid" style={{ display: 'grid', alignItems: 'center' }}>
             <div style={{ aspectRatio: '4/3', overflow: 'hidden', position: 'relative' }}>
-              <ImageSlot src={featured.coverImageUrl} alt={featured.title[loc]} placeholder="Zdjęcie główne" objectPosition={featured.coverImagePosition} />
+              <ImageSlot src={featured.coverImageUrl} alt={featured.title[loc]} placeholder="Zdjęcie główne" objectPosition={featured.coverImagePosition} sizes="(max-width: 900px) 100vw, 55vw" quality={78} priority />
               <div style={{ position: 'absolute', top: 20, left: 20, fontFamily: fontFamily.mono, fontSize: 10, letterSpacing: '.16em', color: colors.fg, background: colors.accent, padding: '6px 10px', textTransform: 'uppercase' }}>
                 {t('featured')}
               </div>
@@ -154,7 +154,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
             {rest.map((a, i) => (
               <Reveal as="a" key={a.id} href={`/artykul/${a.slug[loc]}`} style={{ background: colors.bg, display: 'flex', flexDirection: 'column' }}>
                 <div style={{ aspectRatio: '4/3', overflow: 'hidden' }}>
-                  <ImageSlot src={a.coverImageUrl} alt={a.title[loc]} placeholder="Ilustracja" objectPosition={a.coverImagePosition} />
+                  <ImageSlot src={a.coverImageUrl} alt={a.title[loc]} placeholder="Ilustracja" objectPosition={a.coverImagePosition} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
                 </div>
                 <div style={{ padding: 24, display: 'flex', flexDirection: 'column', flex: 1 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12 }}>
@@ -167,7 +167,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                   <p style={{ fontFamily: fontFamily.serif, fontSize: 14, lineHeight: 1.55, color: colors.muted, margin: '0 0 18px', flex: 1 }}>{a.lead[loc]}</p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: fontFamily.mono, fontSize: 10, color: colors.muted, letterSpacing: '.08em', textTransform: 'uppercase' }}>
                     <span>{a.author}</span>
-                    <span>{new Date(a.publishedAt ?? a.createdAt).toLocaleDateString(loc)}</span>
+                    <span>{new Date(a.publishedAt ?? a.createdAt).toLocaleDateString(loc === 'en' ? 'en-US' : 'pl-PL')}</span>
                   </div>
                 </div>
               </Reveal>

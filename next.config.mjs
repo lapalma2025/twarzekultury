@@ -24,8 +24,9 @@ const securityHeaders = [
       `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com",
+      "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://i.ytimg.com",
       `connect-src 'self' https://*.supabase.co${isDev ? ' ws://localhost:* http://localhost:*' : ''}`,
+      "frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -37,6 +38,11 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    formats: ['image/avif', 'image/webp'],
+    // Cap generated widths — homepage cards never need 3840px downloads.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [96, 128, 256, 384, 640],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
     remotePatterns: [
       { protocol: 'https', hostname: '*.supabase.co' },
       { protocol: 'https', hostname: 'images.unsplash.com' },

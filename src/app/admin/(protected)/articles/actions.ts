@@ -23,7 +23,7 @@ function formToInput(formData: FormData): ArticleInput | { error: string } {
   const raw = Object.fromEntries(formData.entries());
   const parsed = articleSchema.safeParse({
     category: raw.category,
-    subcategory: null,
+    subcategory: raw.subcategory === '' || raw.subcategory === undefined ? null : raw.subcategory,
     slugPl: raw.slugPl,
     slugEn: raw.slugEn,
     titlePl: raw.titlePl,

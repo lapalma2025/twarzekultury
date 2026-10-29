@@ -59,6 +59,8 @@ export interface SiteSettings {
 export interface GalleryFrame {
   slot: 1 | 2 | 3 | 4 | 5;
   imageUrl: string | null;
+  /** CSS object-position (e.g. "50% 20%") — focal point for cover crop. */
+  imagePosition?: string | null;
   alt: Bilingual;
   parallax: number;
 }

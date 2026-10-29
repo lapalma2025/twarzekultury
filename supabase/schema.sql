@@ -149,6 +149,7 @@ create table if not exists public.site_settings (
   film_limit int not null default 4,
   sport_limit int not null default 2,
   gry_limit int not null default 2,
+  content jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
 

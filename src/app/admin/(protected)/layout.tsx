@@ -30,6 +30,9 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
           <Link href="/admin/gallery" style={{ padding: '10px 12px', color: colors.fg }}>
             Galeria (5 kadrów)
           </Link>
+          <Link href="/admin/password" style={{ padding: '10px 12px', color: colors.fg }}>
+            Zmiana hasła
+          </Link>
         </nav>
 
         {!isSupabaseConfigured() && (

@@ -8,29 +8,27 @@ import { colors, fontFamily } from '@/lib/theme';
 import { getCategory, getSubcategoryLabel } from '@/lib/data/categories';
 import type { Article, Locale } from '@/lib/types';
 
+function FilmCard({ locale, a }: { locale: Locale; a: Article }) {
+  return (
+    <Reveal as="a" href={`/artykul/${a.slug[locale]}`} style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ aspectRatio: '16/10', overflow: 'hidden', marginBottom: 18 }}>
+        <ImageSlot src={a.coverImageUrl} alt={a.title[locale]} placeholder="Kadr filmowy" objectPosition={a.coverImagePosition} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 28vw" />
+      </div>
+      <div style={{ fontFamily: fontFamily.mono, fontSize: 11, color: colors.accent, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 10 }}>
+        {getSubcategoryLabel('film', a.subcategory, locale)}
+      </div>
+      <h3 style={{ fontFamily: fontFamily.serif, fontWeight: 400, fontSize: 'clamp(22px, 4vw, 28px)', lineHeight: 1.1, letterSpacing: '-.01em', margin: '0 0 12px' }}>
+        {a.title[locale]}
+      </h3>
+      <p style={{ fontFamily: fontFamily.serif, fontSize: 15, lineHeight: 1.5, color: colors.muted, margin: 0 }}>{a.lead[locale]}</p>
+    </Reveal>
+  );
+}
+
 export function FilmSection({ locale, articles, limit = 4 }: { locale: Locale; articles: Article[]; limit?: number }) {
   const cat = getCategory('film')!;
   const feature = articles.find((a) => a.featured) ?? articles[0] ?? null;
-  const list = articles.filter((a) => a.id !== feature?.id);
-
-  const row = (a: Article, i: number) => (
-    <Reveal
-      key={a.id}
-      as="a"
-      href={`/artykul/${a.slug[locale]}`}
-      className="tk-film-row"
-      style={{ padding: '20px 0', borderBottom: `1px solid ${colors.line}` }}
-    >
-      <span className="tk-fr-nr" style={{ fontFamily: fontFamily.mono, fontSize: 12, color: colors.muted }}>{String(i + 1).padStart(2, '0')}</span>
-      <span className="tk-fr-title" style={{ fontFamily: fontFamily.serif, fontSize: 'clamp(18px, 3vw, 26px)' }}>{a.title[locale]}</span>
-      <span className="tk-fr-cat" style={{ fontFamily: fontFamily.mono, fontSize: 11, color: colors.accent, letterSpacing: '.1em', textTransform: 'uppercase' }}>
-        {getSubcategoryLabel('film', a.subcategory, locale)}
-      </span>
-      <span className="tk-fr-score" style={{ fontFamily: fontFamily.serif, fontSize: 'clamp(18px, 3vw, 26px)', color: a.rating != null ? colors.fg : colors.muted }}>
-        {a.rating != null ? a.rating.toFixed(1).replace('.', ',') : '—'}
-      </span>
-    </Reveal>
-  );
+  const rest = articles.filter((a) => a.id !== feature?.id);
 
   return (
     <section id="film" data-tk-section className="tk-section-pad" style={{ borderBottom: `1px solid ${colors.line}` }}>
@@ -59,7 +57,7 @@ export function FilmSection({ locale, articles, limit = 4 }: { locale: Locale; a
           {feature && (
             <Reveal as="a" href={`/artykul/${feature.slug[locale]}`}>
               <div style={{ aspectRatio: '21/9', overflow: 'hidden', position: 'relative', marginBottom: 28 }}>
-                <ImageSlot src={feature.coverImageUrl} alt={feature.title[locale]} placeholder="Kadr filmowy" objectPosition={feature.coverImagePosition} />
+                <ImageSlot src={feature.coverImageUrl} alt={feature.title[locale]} placeholder="Kadr filmowy" objectPosition={feature.coverImagePosition} sizes="(max-width: 1024px) 100vw, 70vw" />
               </div>
               <div className="tk-film-feature-bottom" style={{ display: 'grid' }}>
                 <h3 style={{ fontFamily: fontFamily.serif, fontWeight: 400, fontSize: 'clamp(32px, 7vw, 56px)', lineHeight: 0.98, letterSpacing: '-.02em', margin: 0, textWrap: 'balance' }}>{feature.title[locale]}</h3>
@@ -73,19 +71,13 @@ export function FilmSection({ locale, articles, limit = 4 }: { locale: Locale; a
             </Reveal>
           )}
 
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="tk-film-row-header" style={{ gap: 32, padding: '20px 0', borderBottom: `1px solid ${colors.line}`, fontFamily: fontFamily.mono, fontSize: 10, letterSpacing: '.14em', color: colors.muted, textTransform: 'uppercase' }}>
-              <span>Nr</span>
-              <span>{locale === 'pl' ? 'Tytuł' : 'Title'}</span>
-              <span>{locale === 'pl' ? 'Kategoria' : 'Category'}</span>
-              <span style={{ textAlign: 'right' }}>{locale === 'pl' ? 'Ocena' : 'Score'}</span>
-            </div>
+          {rest.length > 0 && (
             <ExpandableGrid
-              wrapperStyle={{ display: 'flex', flexDirection: 'column' }}
-              visible={list.slice(0, limit).map((a, i) => row(a, i))}
-              extra={list.slice(limit).map((a, i) => row(a, limit + i))}
+              wrapperStyle={{ display: 'grid', gap: 32, gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}
+              visible={rest.slice(0, limit).map((a) => <FilmCard key={a.id} locale={locale} a={a} />)}
+              extra={rest.slice(limit).map((a) => <FilmCard key={a.id} locale={locale} a={a} />)}
             />
-          </div>
+          )}
         </div>
       </div>
     </section>

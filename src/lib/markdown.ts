@@ -14,14 +14,25 @@ function toEmbedUrl(url: string): string | null {
     const u = new URL(url.trim());
     const host = u.hostname.replace(/^www\./, '');
 
-    if (host === 'youtube.com' || host === 'youtu.be' || host === 'm.youtube.com') {
-      const id = host === 'youtu.be' ? u.pathname.slice(1) : u.searchParams.get('v') ?? u.pathname.split('/embed/')[1];
+    if (
+      host === 'youtube.com' ||
+      host === 'youtu.be' ||
+      host === 'm.youtube.com' ||
+      host === 'music.youtube.com' ||
+      host === 'youtube-nocookie.com'
+    ) {
+      let id: string | null = null;
+      if (host === 'youtu.be') id = u.pathname.split('/').filter(Boolean)[0] ?? null;
+      else if (u.pathname.includes('/embed/')) id = u.pathname.split('/embed/')[1]?.split('/')[0] ?? null;
+      else if (u.pathname.includes('/shorts/')) id = u.pathname.split('/shorts/')[1]?.split('/')[0] ?? null;
+      else if (u.pathname.includes('/live/')) id = u.pathname.split('/live/')[1]?.split('/')[0] ?? null;
+      else id = u.searchParams.get('v');
       if (!id) return null;
-      return `https://${YOUTUBE_HOST}/embed/${id.split('&')[0]}`;
+      return `https://${YOUTUBE_HOST}/embed/${id.split('&')[0].split('?')[0]}`;
     }
 
-    if (host === 'vimeo.com') {
-      const id = u.pathname.split('/').filter(Boolean)[0];
+    if (host === 'vimeo.com' || host === 'player.vimeo.com') {
+      const id = u.pathname.split('/').filter(Boolean).pop();
       if (!id || !/^\d+$/.test(id)) return null;
       return `https://player.vimeo.com/video/${id}`;
     }
@@ -56,16 +67,33 @@ export function renderArticleBody(markdown: string): string {
   const withEmbeds = embedVideos(markdown);
   const html = marked.parse(withEmbeds, { async: false }) as string;
   return sanitizeHtml(html, {
-    allowedTags: ['p', 'br', 'strong', 'em', 'a', 'blockquote', 'h2', 'h3', 'h4', 'ul', 'ol', 'li', 'code', 'pre', 'img', 'hr', 'figure', 'figcaption', 'div', 'iframe'],
+    allowedTags: [
+      'p', 'br', 'strong', 'em', 'u', 's', 'del', 'mark', 'sub', 'sup',
+      'a', 'blockquote', 'h2', 'h3', 'h4', 'ul', 'ol', 'li',
+      'code', 'pre', 'img', 'hr', 'figure', 'figcaption', 'div', 'iframe',
+      'table', 'thead', 'tbody', 'tr', 'th', 'td', 'colgroup', 'col',
+    ],
     allowedAttributes: {
       a: ['href', 'title', 'target', 'rel'],
       img: ['src', 'alt', 'title', 'loading'],
-      div: ['class'],
+      div: ['class', 'data-video-url'],
       iframe: ['src', 'title', 'loading', 'allow', 'allowfullscreen'],
+      p: ['style'],
+      h2: ['style'],
+      h3: ['style'],
+      h4: ['style'],
+      td: ['colspan', 'rowspan', 'style'],
+      th: ['colspan', 'rowspan', 'style'],
+      table: ['class'],
+    },
+    allowedStyles: {
+      '*': {
+        'text-align': [/^left$/, /^center$/, /^right$/, /^justify$/],
+      },
     },
     allowedSchemes: ['http', 'https', 'mailto'],
     allowedIframeHostnames: ALLOWED_IFRAME_HOSTS,
-    allowedClasses: { div: ['tk-embed'] },
+    allowedClasses: { div: ['tk-embed'], table: ['tk-table'] },
     transformTags: {
       a: sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer' }, true),
       img: sanitizeHtml.simpleTransform('img', { loading: 'lazy' }, true),

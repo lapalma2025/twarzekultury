@@ -1,6 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 import { listArticles } from '@/lib/data/articles';
-import { getSiteSettings } from '@/lib/data/settings';
+import { getSiteContent } from '@/lib/data/settings';
 import { listGalleryFrames } from '@/lib/data/gallery';
 import { HeroSection } from '@/components/home/HeroSection';
 import { MusicSection } from '@/components/home/MusicSection';
@@ -16,9 +16,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale);
   const loc = locale as Locale;
 
-  const [all, settings, gallery] = await Promise.all([
+  const [all, content, gallery] = await Promise.all([
     listArticles({ status: 'published' }),
-    getSiteSettings(),
+    getSiteContent(),
     listGalleryFrames(),
   ]);
   const byCategory = {
@@ -28,22 +28,24 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     gry: all.filter((a) => a.category === 'gry'),
   };
 
-  // Duża karta = „Twarz tygodnia” (featured z /admin/week-face).
-  // Obok: zawsze 2 najnowsze opublikowane artykuły (bez filtrowania kategorią).
   const heroLead = all.find((a) => a.featured) ?? all[0] ?? null;
   const newestBeside = all.filter((a) => a.id !== heroLead?.id).slice(0, 2);
-  const heroSecond = newestBeside[0] ?? null;
-  const heroThird = newestBeside[1] ?? null;
 
   return (
     <main id="top" className="tk-container" style={{ maxWidth: 1600, margin: '0 auto' }}>
-      <HeroSection locale={loc} lead={heroLead} second={heroSecond} third={heroThird} />
-      <MusicSection locale={loc} articles={byCategory.muzyka} limit={settings.homepageLimits.muzyka} />
-      <GallerySection frames={gallery} />
-      <FilmSection locale={loc} articles={byCategory.film} limit={settings.homepageLimits.film} />
-      <SportSection locale={loc} articles={byCategory.sport} limit={settings.homepageLimits.sport} />
-      <GamesSection locale={loc} articles={byCategory.gry} limit={settings.homepageLimits.gry} />
-      <ManifestSection />
+      <HeroSection
+        locale={loc}
+        lead={heroLead}
+        second={newestBeside[0] ?? null}
+        third={newestBeside[1] ?? null}
+        content={content}
+      />
+      <MusicSection locale={loc} articles={byCategory.muzyka} limit={content.homepageLimits.muzyka} />
+      <GallerySection frames={gallery} content={content} />
+      <FilmSection locale={loc} articles={byCategory.film} limit={content.homepageLimits.film} />
+      <SportSection locale={loc} articles={byCategory.sport} limit={content.homepageLimits.sport} />
+      <GamesSection locale={loc} articles={byCategory.gry} limit={content.homepageLimits.gry} />
+      <ManifestSection locale={loc} content={content} />
     </main>
   );
 }

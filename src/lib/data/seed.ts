@@ -406,7 +406,45 @@ He leaves after an hour and fifteen minutes. Pays for his own coffee, thanks the
 
 I think I already know the answer.`;
 
-export const SEED_ARTICLES: ArticleInput[] = [
+const DEMO_COVERS: Record<string, string[]> = {
+  muzyka: [
+    'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1400&q=80',
+  ],
+  film: [
+    'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1400&q=80',
+  ],
+  sport: [
+    'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1517438476312-10d79c077509?auto=format&fit=crop&w=1400&q=80',
+  ],
+  gry: [
+    'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=1400&q=80',
+  ],
+};
+
+function withDemoCovers(items: ArticleInput[]): ArticleInput[] {
+  const idx: Record<string, number> = { muzyka: 0, film: 0, sport: 0, gry: 0 };
+  return items.map((a) => {
+    const pool = DEMO_COVERS[a.category] ?? DEMO_COVERS.muzyka;
+    const i = idx[a.category] ?? 0;
+    idx[a.category] = i + 1;
+    const missing = !a.coverImageUrl || a.coverImageUrl.startsWith('/uploads/');
+    return missing ? { ...a, coverImageUrl: pool[i % pool.length] } : a;
+  });
+}
+
+const SEED_ARTICLES_RAW: ArticleInput[] = [
   {
     category: 'muzyka',
     subcategory: 'wywiady',
@@ -889,3 +927,6 @@ export const SEED_ARTICLES: ArticleInput[] = [
     publishedAt: '2025-11-03T09:00:00Z',
   },
 ];
+
+/** Seed articles with CDN covers so a fresh local DB never shows empty image slots. */
+export const SEED_ARTICLES = withDemoCovers(SEED_ARTICLES_RAW);

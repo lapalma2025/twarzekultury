@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -10,6 +11,8 @@ import { Marquee } from '@/components/Marquee';
 import { Footer } from '@/components/Footer';
 import { CookieConsent } from '@/components/CookieConsent';
 import { colors, fontFamily } from '@/lib/theme';
+import { listArticles } from '@/lib/data/articles';
+import { getSiteContent } from '@/lib/data/settings';
 import { absoluteUrl, organizationJsonLd, siteUrl, websiteJsonLd } from '@/lib/seo';
 import { LEGAL_META } from '@/content/legal';
 import type { Locale } from '@/lib/types';
@@ -92,10 +95,15 @@ export default async function LocaleLayout({
   if (!(routing.locales as readonly string[]).includes(locale)) notFound();
   setRequestLocale(locale);
 
-  const messages = await getMessages();
-  const ticker = ((messages as unknown as { home: { ticker: string[] } }).home.ticker) ?? [];
+  const loc = locale as Locale;
+  const [messages, content] = await Promise.all([getMessages(), getSiteContent()]);
+  const newest = await listArticles({ status: 'published', limit: content.marqueeLimit });
+  const ticker = newest.map((a) => ({
+    title: a.title[loc],
+    href: `/artykul/${a.slug[loc]}`,
+  }));
   const orgLd = organizationJsonLd();
-  const siteLd = websiteJsonLd(locale as Locale);
+  const siteLd = websiteJsonLd(loc);
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -105,10 +113,12 @@ export default async function LocaleLayout({
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteLd) }} />
           <div style={{ position: 'relative', background: colors.bg, color: colors.fg, minHeight: '100vh', overflowX: 'hidden' }}>
             <GrainVignette />
-            <Nav locale={locale as Locale} />
+            <Suspense fallback={<div style={{ height: 61 }} />}>
+              <Nav locale={loc} />
+            </Suspense>
             <Marquee items={ticker} />
             {children}
-            <Footer locale={locale as Locale} />
+            <Footer locale={loc} content={content} />
             <CookieConsent />
           </div>
         </NextIntlClientProvider>

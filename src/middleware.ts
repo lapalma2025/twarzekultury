@@ -1,4 +1,4 @@
-import { type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import createIntlMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
 import { updateSession } from '@/lib/supabase/middleware';
@@ -16,7 +16,20 @@ export default async function middleware(request: NextRequest) {
       const { response } = await updateSession(request);
       return response;
     }
-    return;
+    return NextResponse.next();
+  }
+
+  // Always land on Polish at `/` — ignore Accept-Language / NEXT_LOCALE cookie.
+  if (pathname === '/') {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${routing.defaultLocale}`;
+    const res = NextResponse.redirect(url);
+    res.cookies.set('NEXT_LOCALE', routing.defaultLocale, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: 'lax',
+    });
+    return res;
   }
 
   return intlMiddleware(request);

@@ -95,7 +95,10 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
   const subs = currentCat.subcategories;
 
   return (
-    <form action={formAction} style={{ display: 'flex', flexDirection: 'column', gap: 28, maxWidth: 920 }}>
+    <form action={formAction} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 28, maxWidth: 920 }}>
+      <p style={{ margin: 0, fontFamily: fontFamily.mono, fontSize: 11, color: colors.muted, lineHeight: 1.5 }}>
+        Wymagane są obie wersje językowe (PL i EN). Przełącz zakładkę i uzupełnij pola — zapis sprawdzi to po stronie serwera.
+      </p>
       <div className="tk-form-row-2" style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 280px))' }}>
         <div style={fieldStyle}>
           <label style={labelStyle} htmlFor="category">
@@ -166,7 +169,6 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
           <input
             id="titlePl"
             name="titlePl"
-            required
             value={titlePl}
             onChange={(e) => {
               setTitlePl(e.target.value);
@@ -182,7 +184,6 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
           <input
             id="slugPl"
             name="slugPl"
-            required
             value={slugPl}
             onChange={(e) => {
               setSlugPlTouched(true);
@@ -197,7 +198,7 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
           </label>
           <textarea id="leadPl" name="leadPl" rows={2} defaultValue={initial?.lead.pl ?? ''} style={{ ...inputStyle, resize: 'vertical' }} />
         </div>
-        <RichTextEditor id="bodyPl" name="bodyPl" label="Treść (PL)" defaultValue={initial?.body.pl ?? ''} required />
+        <RichTextEditor id="bodyPl" name="bodyPl" label="Treść (PL)" defaultValue={initial?.body.pl ?? ''} />
       </div>
 
       <div style={{ display: lang === 'en' ? 'flex' : 'none', flexDirection: 'column', gap: 20 }}>
@@ -208,7 +209,6 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
           <input
             id="titleEn"
             name="titleEn"
-            required
             value={titleEn}
             onChange={(e) => {
               setTitleEn(e.target.value);
@@ -224,7 +224,6 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
           <input
             id="slugEn"
             name="slugEn"
-            required
             value={slugEn}
             onChange={(e) => {
               setSlugEnTouched(true);
@@ -239,7 +238,7 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
           </label>
           <textarea id="leadEn" name="leadEn" rows={2} defaultValue={initial?.lead.en ?? ''} style={{ ...inputStyle, resize: 'vertical' }} />
         </div>
-        <RichTextEditor id="bodyEn" name="bodyEn" label="Treść (EN)" defaultValue={initial?.body.en ?? ''} required />
+        <RichTextEditor id="bodyEn" name="bodyEn" label="Treść (EN)" defaultValue={initial?.body.en ?? ''} />
       </div>
 
       <div style={fieldStyle}>

@@ -9,6 +9,14 @@ const intlMiddleware = createIntlMiddleware(routing);
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // `/pl/admin/...` or `/en/admin/...` → strip locale so login/panel always works.
+  const localePrefixed = pathname.match(new RegExp(`^/(${routing.locales.join('|')})(/(?:admin|api)(?:/.*)?)$`));
+  if (localePrefixed) {
+    const url = request.nextUrl.clone();
+    url.pathname = localePrefixed[2];
+    return NextResponse.redirect(url);
+  }
+
   // Admin + API routes: not localized. Just keep the Supabase session fresh
   // (actual authorization is enforced server-side in app/admin/layout.tsx).
   if (pathname.startsWith('/admin') || pathname.startsWith('/api')) {

@@ -41,12 +41,30 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
           </div>
         )}
 
-        <div style={{ marginTop: 'auto', fontFamily: fontFamily.mono, fontSize: 11, color: colors.muted }}>
-          <div style={{ marginBottom: 12, wordBreak: 'break-all' }}>{admin.email}</div>
+        <div style={{ marginTop: 'auto', fontFamily: fontFamily.mono, fontSize: 11, color: colors.muted, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ wordBreak: 'break-all' }}>{admin.email}</div>
+          <Link
+            href="/pl"
+            style={{
+              display: 'inline-block',
+              background: 'transparent',
+              border: `1px solid ${colors.line3}`,
+              color: colors.fg,
+              padding: '8px 14px',
+              fontFamily: fontFamily.mono,
+              fontSize: 11,
+              letterSpacing: '.06em',
+              textTransform: 'uppercase',
+              textDecoration: 'none',
+              textAlign: 'center',
+            }}
+          >
+            ← Strona główna
+          </Link>
           <form action={logoutAction}>
             <button
               type="submit"
-              style={{ background: 'transparent', border: `1px solid ${colors.line3}`, color: colors.fg, padding: '8px 14px', fontFamily: fontFamily.mono, fontSize: 11, letterSpacing: '.06em', textTransform: 'uppercase', cursor: 'pointer' }}
+              style={{ width: '100%', background: 'transparent', border: `1px solid ${colors.line3}`, color: colors.fg, padding: '8px 14px', fontFamily: fontFamily.mono, fontSize: 11, letterSpacing: '.06em', textTransform: 'uppercase', cursor: 'pointer' }}
             >
               Wyloguj
             </button>

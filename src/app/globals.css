@@ -419,6 +419,11 @@ input, textarea, select, button { font-family: inherit; }
 }
 
 /* --- "Pokaż więcej" toggle (homepage sections) --- */
+.tk-expandable { width: 100%; }
+/* display:contents so cards stay direct grid children when open */
+.tk-expand-slot { display: contents; }
+.tk-expand-slot.is-collapsed { display: none; }
+
 .tk-show-more-btn {
   display: block;
   margin: 40px auto 0;

@@ -132,7 +132,6 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
             name="subcategory"
             value={subcategory}
             onChange={(e) => setSubcategory(e.target.value)}
-            required
             style={selectStyle}
           >
             {subs.map((s) => (
@@ -256,13 +255,13 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
           <label style={labelStyle} htmlFor="author">
             Autor
           </label>
-          <input id="author" name="author" required defaultValue={initial?.author ?? 'Redakcja'} style={inputStyle} />
+          <input id="author" name="author" defaultValue={initial?.author ?? 'Redakcja'} style={inputStyle} />
         </div>
         <div style={fieldStyle}>
           <label style={labelStyle} htmlFor="readingTimeMin">
             Czas czytania (min)
           </label>
-          <input id="readingTimeMin" name="readingTimeMin" type="number" min={1} max={180} required defaultValue={initial?.readingTimeMin ?? 5} style={inputStyle} />
+          <input id="readingTimeMin" name="readingTimeMin" type="number" min={1} max={180} defaultValue={initial?.readingTimeMin ?? 5} style={inputStyle} />
         </div>
         <div style={fieldStyle}>
           <label style={labelStyle} htmlFor="rating">

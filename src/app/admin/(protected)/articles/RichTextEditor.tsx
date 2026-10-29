@@ -126,12 +126,33 @@ export function RichTextEditor({ id, name, label, defaultValue, required }: Rich
   const [videoUrl, setVideoUrl] = useState('');
   const [ready, setReady] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const hiddenRef = useRef<HTMLInputElement>(null);
   const syncingRef = useRef(false);
   const uploadRef = useRef<(file: File) => Promise<void>>(async () => {});
+  const modeRef = useRef(mode);
+  modeRef.current = mode;
 
   useEffect(() => {
     setReady(true);
   }, []);
+
+  // Flush TipTap → hidden input synchronously on submit (setState would be too late).
+  useEffect(() => {
+    const root = rootRef.current;
+    const form = root?.closest('form');
+    if (!form || !editor) return;
+
+    const flush = () => {
+      if (modeRef.current === 'markdown') return;
+      const md = editorHtmlToMarkdown(editor.getHTML());
+      setMarkdown(md);
+      if (hiddenRef.current) hiddenRef.current.value = md;
+    };
+
+    form.addEventListener('submit', flush, true);
+    return () => form.removeEventListener('submit', flush, true);
+  }, [editor]);
 
   const editor = useEditor(
     {
@@ -318,7 +339,7 @@ export function RichTextEditor({ id, name, label, defaultValue, required }: Rich
 
   if (!ready) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div ref={rootRef} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <label style={labelStyle}>{label}</label>
         <div style={{ border: `1px solid ${colors.line3}`, borderRadius: 6, minHeight: 360, padding: 24, color: colors.muted, fontFamily: fontFamily.mono, fontSize: 12 }}>
           Ładowanie edytora…
@@ -329,7 +350,7 @@ export function RichTextEditor({ id, name, label, defaultValue, required }: Rich
   }
 
   return (
-    <div className="tk-rte" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <div ref={rootRef} className="tk-rte" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
         <label style={labelStyle} htmlFor={id}>
           {label}
@@ -695,7 +716,7 @@ export function RichTextEditor({ id, name, label, defaultValue, required }: Rich
         />
       )}
 
-      <input type="hidden" name={name} value={markdown} required={required} />
+      <input ref={hiddenRef} type="hidden" name={name} value={markdown} readOnly />
 
       {error && (
         <span role="alert" style={{ fontFamily: fontFamily.mono, fontSize: 11, color: colors.accent }}>

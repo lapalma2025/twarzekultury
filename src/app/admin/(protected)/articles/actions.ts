@@ -106,9 +106,14 @@ export async function updateArticleAction(id: string, _prev: ArticleFormState, f
   redirect('/admin');
 }
 
-export async function deleteArticleAction(id: string): Promise<void> {
+export async function deleteArticleAction(id: string): Promise<{ error?: string }> {
   await requireAdmin();
-  await deleteArticle(id);
+  try {
+    await deleteArticle(id);
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Nie udało się usunąć artykułu.' };
+  }
   revalidatePath('/admin');
   revalidatePath('/', 'layout');
+  return {};
 }

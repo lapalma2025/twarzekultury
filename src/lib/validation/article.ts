@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { CATEGORIES } from '@/lib/data/categories';
+import { slugify } from '@/lib/slug';
 
 const categoryKeys = CATEGORIES.map((c) => c.key) as [string, ...string[]];
 
@@ -51,17 +52,25 @@ export const articleSchema = z
     featured: z.coerce.boolean().default(false),
   })
   .superRefine((data, ctx) => {
-    const plOk = data.titlePl.length >= 3 && slugRegex.test(data.slugPl) && data.bodyPl.length >= 1;
-    const enOk = data.titleEn.length >= 3 && slugRegex.test(data.slugEn) && data.bodyEn.length >= 1;
+    const slugPl = data.slugPl || slugify(data.titlePl);
+    const slugEn = data.slugEn || slugify(data.titleEn);
+    const plOk = data.titlePl.length >= 3 && slugRegex.test(slugPl) && data.bodyPl.length >= 1;
+    const enOk = data.titleEn.length >= 3 && slugRegex.test(slugEn) && data.bodyEn.length >= 1;
     if (!plOk && !enOk) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Wypełnij przynajmniej jedną wersję językową: tytuł, slug i treść (PL lub EN).',
+        message: 'Wypełnij przynajmniej jedną wersję: tytuł (min. 3 znaki) i treść (PL lub EN). Slug uzupełni się sam.',
       });
     }
   });
 
 export type ArticleFormValues = z.infer<typeof articleSchema>;
+
+function withAutoSlug(title: string, slug: string): string {
+  const s = slug.trim();
+  if (s) return s;
+  return slugify(title);
+}
 
 /** Copy missing bilingual fields from the filled language so public pages never show blanks. */
 export function fillMissingLocaleFields<T extends {
@@ -74,38 +83,48 @@ export function fillMissingLocaleFields<T extends {
   bodyPl: string;
   bodyEn: string;
 }>(v: T): T {
-  const plComplete = v.titlePl.trim().length >= 3 && slugRegex.test(v.slugPl) && v.bodyPl.trim().length >= 1;
-  const enComplete = v.titleEn.trim().length >= 3 && slugRegex.test(v.slugEn) && v.bodyEn.trim().length >= 1;
+  // Title filled but slug left empty → generate slug server-side (common when
+  // the author typed a title then hit save without touching the slug field).
+  const base = {
+    ...v,
+    slugPl: withAutoSlug(v.titlePl, v.slugPl),
+    slugEn: withAutoSlug(v.titleEn, v.slugEn),
+  };
+
+  const plComplete =
+    base.titlePl.trim().length >= 3 && slugRegex.test(base.slugPl) && base.bodyPl.trim().length >= 1;
+  const enComplete =
+    base.titleEn.trim().length >= 3 && slugRegex.test(base.slugEn) && base.bodyEn.trim().length >= 1;
 
   if (plComplete && !enComplete) {
     return {
-      ...v,
-      titleEn: v.titleEn.trim() || v.titlePl,
-      slugEn: v.slugEn.trim() || v.slugPl,
-      leadEn: v.leadEn.trim() || v.leadPl,
-      bodyEn: v.bodyEn.trim() || v.bodyPl,
+      ...base,
+      titleEn: base.titleEn.trim() || base.titlePl,
+      slugEn: base.slugEn.trim() || base.slugPl,
+      leadEn: base.leadEn.trim() || base.leadPl,
+      bodyEn: base.bodyEn.trim() || base.bodyPl,
     };
   }
 
   if (enComplete && !plComplete) {
     return {
-      ...v,
-      titlePl: v.titlePl.trim() || v.titleEn,
-      slugPl: v.slugPl.trim() || v.slugEn,
-      leadPl: v.leadPl.trim() || v.leadEn,
-      bodyPl: v.bodyPl.trim() || v.bodyEn,
+      ...base,
+      titlePl: base.titlePl.trim() || base.titleEn,
+      slugPl: base.slugPl.trim() || base.slugEn,
+      leadPl: base.leadPl.trim() || base.leadEn,
+      bodyPl: base.bodyPl.trim() || base.bodyEn,
     };
   }
 
   return {
-    ...v,
-    titleEn: v.titleEn.trim() || v.titlePl,
-    titlePl: v.titlePl.trim() || v.titleEn,
-    slugEn: v.slugEn.trim() || v.slugPl,
-    slugPl: v.slugPl.trim() || v.slugEn,
-    leadEn: v.leadEn.trim() || v.leadPl,
-    leadPl: v.leadPl.trim() || v.leadEn,
-    bodyEn: v.bodyEn.trim() || v.bodyPl,
-    bodyPl: v.bodyPl.trim() || v.bodyEn,
+    ...base,
+    titleEn: base.titleEn.trim() || base.titlePl,
+    titlePl: base.titlePl.trim() || base.titleEn,
+    slugEn: base.slugEn.trim() || base.slugPl,
+    slugPl: base.slugPl.trim() || base.slugEn,
+    leadEn: base.leadEn.trim() || base.leadPl,
+    leadPl: base.leadPl.trim() || base.leadEn,
+    bodyEn: base.bodyEn.trim() || base.bodyPl,
+    bodyPl: base.bodyPl.trim() || base.bodyEn,
   };
 }

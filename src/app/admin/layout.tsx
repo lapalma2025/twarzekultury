@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl" suppressHydrationWarning>

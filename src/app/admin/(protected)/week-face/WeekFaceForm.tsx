@@ -44,11 +44,8 @@ export function WeekFaceForm({ articles, currentId }: { articles: Article[]; cur
           return (
             <label
               key={a.id}
+              className="tk-admin-week-row"
               style={{
-                display: 'grid',
-                gridTemplateColumns: '24px 72px 1fr',
-                gap: 14,
-                alignItems: 'center',
                 padding: 12,
                 border: `1px solid ${selected ? colors.accent : colors.line3}`,
                 cursor: 'pointer',
@@ -56,7 +53,7 @@ export function WeekFaceForm({ articles, currentId }: { articles: Article[]; cur
               }}
             >
               <input type="radio" name="articleId" value={a.id} defaultChecked={selected || (!currentId && a.id === articles[0].id)} />
-              <div style={{ position: 'relative', width: 72, aspectRatio: '4/5', background: '#141210', overflow: 'hidden' }}>
+              <div style={{ position: 'relative', width: '100%', aspectRatio: '4/5', background: '#141210', overflow: 'hidden' }}>
                 {a.coverImageUrl ? (
                   <Image src={a.coverImageUrl} alt="" fill sizes="72px" style={{ objectFit: 'cover' }} unoptimized />
                 ) : null}

@@ -83,7 +83,7 @@ function SlotEditor({ frame }: { frame: GalleryFrame }) {
         Kadr {frame.slot} · proporcje {ratio.replace('/', ':')}
       </div>
 
-      <div style={{ display: 'grid', gap: 20, gridTemplateColumns: 'minmax(160px, 220px) 1fr', alignItems: 'start' }}>
+      <div className="tk-admin-slot-grid">
         <div>
           {url ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

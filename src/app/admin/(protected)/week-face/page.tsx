@@ -12,7 +12,7 @@ export default async function WeekFaceAdminPage() {
 
   return (
     <div>
-      <h1 style={{ fontFamily: fontFamily.serif, fontSize: 32, fontWeight: 400, marginBottom: 12 }}>
+      <h1 className="tk-admin-h1" style={{ marginBottom: 12 }}>
         Twarz tygodnia
       </h1>
       <p style={{ fontFamily: fontFamily.mono, fontSize: 12, color: colors.muted, lineHeight: 1.6, marginBottom: 32, maxWidth: 560 }}>

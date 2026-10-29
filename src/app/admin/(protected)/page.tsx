@@ -10,13 +10,10 @@ export default async function AdminDashboard() {
   const articles = await listArticles();
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 28 }}>
-        <h1 style={{ fontFamily: fontFamily.serif, fontSize: 32, fontWeight: 400, margin: 0 }}>Artykuły</h1>
-        <Link
-          href="/admin/articles/new"
-          style={{ background: colors.accent, color: colors.bg, padding: '10px 18px', fontFamily: fontFamily.mono, fontSize: 12, letterSpacing: '.08em', textTransform: 'uppercase' }}
-        >
+    <div className="tk-admin-page">
+      <div className="tk-admin-page-header">
+        <h1 className="tk-admin-h1">Artykuły</h1>
+        <Link href="/admin/articles/new" className="tk-admin-primary-btn">
           + Nowy artykuł
         </Link>
       </div>
@@ -24,15 +21,8 @@ export default async function AdminDashboard() {
       {articles.length === 0 ? (
         <p style={{ color: colors.muted, fontFamily: fontFamily.serif }}>Brak artykułów. Dodaj pierwszy.</p>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', minWidth: 640 }}>
-          <div
-            style={{
-              display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 100px 140px', gap: 16, padding: '10px 0',
-              borderBottom: `1px solid ${colors.line3}`, fontFamily: fontFamily.mono, fontSize: 10,
-              letterSpacing: '.1em', color: colors.muted, textTransform: 'uppercase',
-            }}
-          >
+        <div className="tk-admin-list">
+          <div className="tk-admin-list-head">
             <span>Tytuł</span>
             <span>Kategoria</span>
             <span>Autor</span>
@@ -42,31 +32,22 @@ export default async function AdminDashboard() {
           {articles.map((a) => {
             const cat = getCategory(a.category);
             return (
-              <div
-                key={a.id}
-                style={{
-                  display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 100px 140px', gap: 16, padding: '14px 0',
-                  borderBottom: `1px solid ${colors.line}`, alignItems: 'center', fontSize: 14,
-                }}
-              >
-                <span style={{ fontFamily: fontFamily.serif, fontSize: 17 }}>{a.title.pl}</span>
-                <span style={{ color: colors.muted, fontFamily: fontFamily.mono, fontSize: 12 }}>
+              <div key={a.id} className="tk-admin-list-row">
+                <span className="tk-admin-list-title">{a.title.pl}</span>
+                <span className="tk-admin-list-meta" data-label="Kategoria">
                   {cat?.label.pl} {a.subcategory ? `· ${a.subcategory}` : ''}
                 </span>
-                <span style={{ color: colors.muted, fontFamily: fontFamily.mono, fontSize: 12 }}>{a.author}</span>
+                <span className="tk-admin-list-meta" data-label="Autor">
+                  {a.author}
+                </span>
                 <span
-                  style={{
-                    fontFamily: fontFamily.mono, fontSize: 11, textTransform: 'uppercase',
-                    color: a.status === 'published' ? '#7CCB8C' : colors.muted,
-                  }}
+                  className="tk-admin-list-status"
+                  style={{ color: a.status === 'published' ? '#7CCB8C' : colors.muted }}
                 >
                   {a.status === 'published' ? 'Live' : 'Szkic'}
                 </span>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <Link
-                    href={`/admin/articles/${a.id}/edit`}
-                    style={{ border: `1px solid ${colors.line3}`, padding: '6px 10px', fontFamily: fontFamily.mono, fontSize: 10, letterSpacing: '.06em', textTransform: 'uppercase' }}
-                  >
+                <div className="tk-admin-list-actions">
+                  <Link href={`/admin/articles/${a.id}/edit`} className="tk-admin-ghost-btn">
                     Edytuj
                   </Link>
                   <DeleteButton id={a.id} title={a.title.pl} />
@@ -74,7 +55,6 @@ export default async function AdminDashboard() {
               </div>
             );
           })}
-        </div>
         </div>
       )}
     </div>

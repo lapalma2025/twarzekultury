@@ -34,7 +34,7 @@ const RichTextEditor = dynamic(
 
 const inputStyle: React.CSSProperties = {
   background: 'transparent', border: `1px solid ${colors.line3}`, color: colors.fg,
-  padding: '10px 12px', fontSize: 14, width: '100%', fontFamily: fontFamily.sans,
+  padding: '10px 12px', fontSize: 16, width: '100%', maxWidth: '100%', boxSizing: 'border-box', fontFamily: fontFamily.sans,
 };
 /** Native <select> dropdowns on Windows ignore dark text color — force readable options. */
 const selectStyle: React.CSSProperties = {
@@ -95,7 +95,7 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
   const subs = currentCat.subcategories;
 
   return (
-    <form action={formAction} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 28, maxWidth: 920 }}>
+    <form action={formAction} noValidate className="tk-admin-form" style={{ display: 'flex', flexDirection: 'column', gap: 28, maxWidth: 920, width: '100%' }}>
       <p style={{ margin: 0, fontFamily: fontFamily.mono, fontSize: 11, color: colors.muted, lineHeight: 1.5 }}>
         Wystarczy jedna wersja językowa (PL lub EN). Pusta zakładka zostanie uzupełniona tą wypełnioną.
       </p>

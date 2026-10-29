@@ -61,15 +61,12 @@ export function DeleteButton({ id, title }: { id: string; title: string }) {
           setError(null);
           setOpen(true);
         }}
+        className="tk-admin-ghost-btn"
         style={{
           background: 'transparent',
           border: `1px solid ${colors.line3}`,
           color: colors.muted,
-          padding: '6px 10px',
           fontFamily: fontFamily.mono,
-          fontSize: 10,
-          letterSpacing: '.06em',
-          textTransform: 'uppercase',
           cursor: 'pointer',
         }}
       >

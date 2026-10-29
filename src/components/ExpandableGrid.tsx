@@ -79,7 +79,6 @@ export function ExpandableGrid({
           })}
       </div>
       <button
-        ref={btnRef}
         type="button"
         className="tk-show-more-btn"
         aria-expanded={expanded}

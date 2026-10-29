@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/auth';
-import { articleSchema } from '@/lib/validation/article';
+import { articleSchema, fillMissingLocaleFields } from '@/lib/validation/article';
 import { createArticle, updateArticle, deleteArticle, getArticleById } from '@/lib/data/articles';
 import type { ArticleInput } from '@/lib/types';
 
@@ -47,7 +47,7 @@ function formToInput(formData: FormData): ArticleInput | { error: string } {
     return { error: parsed.error.issues[0]?.message ?? 'Nieprawidłowe dane formularza.' };
   }
 
-  const v = parsed.data;
+  const v = fillMissingLocaleFields(parsed.data);
   return {
     category: v.category as ArticleInput['category'],
     subcategory: v.subcategory || null,

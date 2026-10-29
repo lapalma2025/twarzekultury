@@ -97,7 +97,7 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
   return (
     <form action={formAction} noValidate style={{ display: 'flex', flexDirection: 'column', gap: 28, maxWidth: 920 }}>
       <p style={{ margin: 0, fontFamily: fontFamily.mono, fontSize: 11, color: colors.muted, lineHeight: 1.5 }}>
-        Wymagane są obie wersje językowe (PL i EN). Przełącz zakładkę i uzupełnij pola — zapis sprawdzi to po stronie serwera.
+        Wystarczy jedna wersja językowa (PL lub EN). Pusta zakładka zostanie uzupełniona tą wypełnioną.
       </p>
       <div className="tk-form-row-2" style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 280px))' }}>
         <div style={fieldStyle}>

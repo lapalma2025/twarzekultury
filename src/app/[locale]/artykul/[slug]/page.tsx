@@ -8,6 +8,7 @@ import { colors, fontFamily } from '@/lib/theme';
 import { getArticleBySlug, listRelatedArticles } from '@/lib/data/articles';
 import { getCategory, getSubcategoryLabel } from '@/lib/data/categories';
 import { renderArticleBody } from '@/lib/markdown';
+import { localized } from '@/lib/i18n-content';
 import { absoluteUrl, buildPageMetadata, siteUrl } from '@/lib/seo';
 import type { Locale } from '@/lib/types';
 
@@ -23,11 +24,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const meta = buildPageMetadata({
     locale: loc,
-    title: article.title[loc],
-    description: article.lead[loc],
-    path: `/${loc}/artykul/${article.slug[loc]}`,
-    pathPl: `/pl/artykul/${article.slug.pl}`,
-    pathEn: `/en/artykul/${article.slug.en}`,
+    title: localized(article.title, loc),
+    description: localized(article.lead, loc),
+    path: `/${loc}/artykul/${localized(article.slug, loc)}`,
+    pathPl: `/pl/artykul/${localized(article.slug, 'pl')}`,
+    pathEn: `/en/artykul/${localized(article.slug, 'en')}`,
     type: 'article',
     image: article.coverImageUrl,
   });
@@ -56,19 +57,21 @@ export default async function ArticlePage({ params }: Props) {
 
   const t = await getTranslations({ locale, namespace: 'article' });
   const cat = getCategory(article.category)!;
-  const bodyHtml = renderArticleBody(article.body[loc]);
+  const title = localized(article.title, loc);
+  const lead = localized(article.lead, loc);
+  const bodyHtml = renderArticleBody(localized(article.body, loc));
 
   const related = await listRelatedArticles(article.category, article.id, 3);
 
   const dateFmt = new Intl.DateTimeFormat(loc === 'pl' ? 'pl-PL' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
 
-  const pageUrl = absoluteUrl(`/${loc}/artykul/${article.slug[loc]}`);
+  const pageUrl = absoluteUrl(`/${loc}/artykul/${localized(article.slug, loc)}`);
   const coverAbs = article.coverImageUrl ? absoluteUrl(article.coverImageUrl) : undefined;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
-    headline: article.title[loc],
-    description: article.lead[loc],
+    headline: title,
+    description: lead,
     image: coverAbs ? [coverAbs] : undefined,
     datePublished: article.publishedAt ?? article.createdAt,
     dateModified: article.updatedAt,
@@ -90,7 +93,7 @@ export default async function ArticlePage({ params }: Props) {
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Twarze Kultury', item: absoluteUrl(`/${loc}`) },
       { '@type': 'ListItem', position: 2, name: cat.label[loc], item: absoluteUrl(`/${loc}/kategoria/${article.category}`) },
-      { '@type': 'ListItem', position: 3, name: article.title[loc], item: pageUrl },
+      { '@type': 'ListItem', position: 3, name: title, item: pageUrl },
     ],
   };
 
@@ -117,9 +120,9 @@ export default async function ArticlePage({ params }: Props) {
           {getSubcategoryLabel(article.category, article.subcategory, loc)} · {cat.label[loc]}
         </div>
         <h1 className="tk-article-title" style={{ fontFamily: fontFamily.serif, fontWeight: 400, letterSpacing: '-.03em', margin: '0 0 32px', textWrap: 'balance' }}>
-          {article.title[loc]}
+          {title}
         </h1>
-        <p style={{ fontFamily: fontFamily.serif, fontSize: 'clamp(17px, 3vw, 22px)', lineHeight: 1.5, color: colors.muted2, margin: 0, maxWidth: '60ch', fontStyle: 'italic' }}>{article.lead[loc]}</p>
+        <p style={{ fontFamily: fontFamily.serif, fontSize: 'clamp(17px, 3vw, 22px)', lineHeight: 1.5, color: colors.muted2, margin: 0, maxWidth: '60ch', fontStyle: 'italic' }}>{lead}</p>
         <div className="tk-article-meta" style={{ display: 'flex', gap: 24, marginTop: 40, paddingTop: 24, borderTop: `1px solid ${colors.line}`, fontFamily: fontFamily.mono, fontSize: 11, color: colors.muted, letterSpacing: '.08em', textTransform: 'uppercase' }}>
           <span>{article.author}</span>
           <span>·</span>
@@ -128,7 +131,7 @@ export default async function ArticlePage({ params }: Props) {
       </section>
 
       <div style={{ aspectRatio: '4/3', overflow: 'hidden', marginBottom: 64 }}>
-        <ImageSlot src={article.coverImageUrl} alt={article.title[loc]} placeholder="Zdjęcie główne artykułu" objectPosition={article.coverImagePosition} sizes="(max-width: 900px) 100vw, 900px" quality={78} priority />
+        <ImageSlot src={article.coverImageUrl} alt={title} placeholder="Zdjęcie główne artykułu" objectPosition={article.coverImagePosition} sizes="(max-width: 900px) 100vw, 900px" quality={78} priority />
       </div>
 
       <article className="tk-article" style={{ maxWidth: '68ch', margin: '0 auto' }} dangerouslySetInnerHTML={{ __html: bodyHtml }} />

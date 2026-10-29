@@ -213,10 +213,14 @@ export async function getArticleById(id: string): Promise<Article | null> {
 export const getArticleBySlug = cache(async (locale: 'pl' | 'en', slug: string): Promise<Article | null> => {
   if (!isSupabaseConfigured()) return localStore.getBySlug(locale, slug);
   const supabase = createPublicSupabaseClient();
-  const column = locale === 'pl' ? 'slug_pl' : 'slug_en';
-  const { data, error } = await supabase.from('articles').select('*').eq(column, slug).maybeSingle();
-  if (error) throw error;
-  return data ? rowToArticle(data as Row) : null;
+  const primary = locale === 'pl' ? 'slug_pl' : 'slug_en';
+  const secondary = locale === 'pl' ? 'slug_en' : 'slug_pl';
+  const first = await supabase.from('articles').select('*').eq(primary, slug).maybeSingle();
+  if (first.error) throw first.error;
+  if (first.data) return rowToArticle(first.data as Row);
+  const second = await supabase.from('articles').select('*').eq(secondary, slug).maybeSingle();
+  if (second.error) throw second.error;
+  return second.data ? rowToArticle(second.data as Row) : null;
 });
 
 export async function createArticle(input: ArticleInput): Promise<Article> {

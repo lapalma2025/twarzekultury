@@ -7,6 +7,7 @@ import { CameraIcon } from '@/components/icons/CameraIcon';
 import { colors, fontFamily } from '@/lib/theme';
 import { getCategory, getSubcategoryLabel } from '@/lib/data/categories';
 import type { Article, Locale } from '@/lib/types';
+import { pickSectionLead } from '@/lib/section-lead';
 
 function FilmCard({ locale, a }: { locale: Locale; a: Article }) {
   return (
@@ -27,7 +28,7 @@ function FilmCard({ locale, a }: { locale: Locale; a: Article }) {
 
 export function FilmSection({ locale, articles, limit = 4 }: { locale: Locale; articles: Article[]; limit?: number }) {
   const cat = getCategory('film')!;
-  const feature = articles.find((a) => a.featured) ?? articles[0] ?? null;
+  const feature = pickSectionLead(articles);
   const rest = articles.filter((a) => a.id !== feature?.id);
 
   return (

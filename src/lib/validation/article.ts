@@ -50,6 +50,10 @@ export const articleSchema = z
     tags: z.string().trim().max(300).default(''),
     status: z.enum(['draft', 'published']),
     featured: z.coerce.boolean().default(false),
+    sectionFeatured: z
+      .union([z.literal('true'), z.literal('false'), z.literal('on'), z.boolean()])
+      .optional()
+      .transform((v) => v === true || v === 'true' || v === 'on'),
   })
   .superRefine((data, ctx) => {
     const slugPl = data.slugPl || slugify(data.titlePl);

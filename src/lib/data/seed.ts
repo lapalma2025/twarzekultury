@@ -464,7 +464,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Mrozu', 'Wywiad', 'Nowa płyta', 'Polski pop'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: now,
   },
   {
@@ -486,7 +488,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: 9.1,
     tags: ['Recenzja', 'Album miesiąca'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-12T09:00:00Z',
   },
   {
@@ -511,7 +515,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Koncerty', "Open'er"],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-10T09:00:00Z',
   },
   {
@@ -536,7 +542,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Wywiad'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-09T09:00:00Z',
   },
   {
@@ -558,7 +566,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Newsy'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-08T09:00:00Z',
   },
   {
@@ -580,7 +590,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Recenzja'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-07T09:00:00Z',
   },
 
@@ -607,7 +619,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Recenzja', 'Kino polskie'],
     status: 'published',
+    
     featured: true,
+    sectionFeatured: false,
     publishedAt: '2026-09-13T08:00:00Z',
   },
   {
@@ -623,7 +637,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: 8.7,
     tags: ['Recenzja'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-12T08:00:00Z',
   },
   {
@@ -639,7 +655,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['News'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-11T08:00:00Z',
   },
   {
@@ -655,7 +673,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: 7.9,
     tags: ['Recenzja'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-10T08:00:00Z',
   },
   {
@@ -671,7 +691,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['News'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-09T08:00:00Z',
   },
 
@@ -695,7 +717,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['MMA', 'Reportaż'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-13T07:00:00Z',
   },
   {
@@ -717,7 +741,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Boks', 'Sylwetka'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-12T07:00:00Z',
   },
   {
@@ -733,7 +759,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['MMA'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-11T07:00:00Z',
   },
 
@@ -757,7 +785,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: 8.4,
     tags: ['Recenzja', 'Bloober Team'],
     status: 'published',
+    
     featured: true,
+    sectionFeatured: false,
     publishedAt: '2026-09-13T06:00:00Z',
   },
   {
@@ -779,7 +809,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Zapowiedź', 'gamescom 2026'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-09-12T06:00:00Z',
   },
 
@@ -803,7 +835,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Perfect', 'Wywiad', 'Rock'],
     status: 'published',
+    
     featured: true,
+    sectionFeatured: false,
     publishedAt: '2026-05-28T09:00:00Z',
   },
   {
@@ -825,7 +859,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Wywiad', 'Cyberpunk 2077', 'Muzyka i aktorstwo'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-04-07T09:00:00Z',
   },
   {
@@ -847,7 +883,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Jazz', 'Wywiad', 'Voices of Human Consciousness'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-08-11T09:00:00Z',
   },
   {
@@ -866,7 +904,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: 9.4,
     tags: ['Recenzja', 'Black Sabbath', 'Klasyka'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2025-10-28T09:00:00Z',
   },
   {
@@ -885,7 +925,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: 8.9,
     tags: ['Recenzja', 'Black Sabbath', 'Klasyka'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2025-11-13T09:00:00Z',
   },
   {
@@ -904,7 +946,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: 6.5,
     tags: ['Recenzja', 'David Bowie'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2026-01-10T09:00:00Z',
   },
   {
@@ -923,7 +967,9 @@ const SEED_ARTICLES_RAW: ArticleInput[] = [
     rating: null,
     tags: ['Koncert', 'Coma', 'Relacja'],
     status: 'published',
+    
     featured: false,
+    sectionFeatured: false,
     publishedAt: '2025-11-03T09:00:00Z',
   },
 ];

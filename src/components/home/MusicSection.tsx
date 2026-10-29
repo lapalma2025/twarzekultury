@@ -7,21 +7,13 @@ import { VinylIcon } from '@/components/icons/VinylIcon';
 import { colors, fontFamily } from '@/lib/theme';
 import { getCategory, getSubcategoryLabel } from '@/lib/data/categories';
 import type { Article, Locale } from '@/lib/types';
+import { pickSectionLead } from '@/lib/section-lead';
 
 export function MusicSection({ locale, articles, limit = 4 }: { locale: Locale; articles: Article[]; limit?: number }) {
   const cat = getCategory('muzyka')!;
-  // Prefer a rated album review as the section's own feature so it doesn't
-  // just repeat whichever article is already leading the homepage hero —
-  // and prefer one with a real cover photo over a placeholder.
-  const feature =
-    articles.find((a) => a.subcategory === 'recenzje' && a.rating != null && a.coverImageUrl) ??
-    articles.find((a) => a.subcategory === 'recenzje' && a.rating != null) ??
-    articles.find((a) => !a.featured) ??
-    articles[0] ??
-    null;
-  // Fill the card grid with real photos first (the sitewide hero article is
-  // excluded so it isn't repeated here) — only fall back to placeholder
-  // articles once every real photo has been shown.
+  // Pinned „artykuł główny”, otherwise newest by publish date.
+  // Skip sitewide „Twarz tygodnia” in the card grid so it isn't repeated.
+  const feature = pickSectionLead(articles);
   const rest = articles.filter((a) => a.id !== feature?.id && !a.featured);
   const withPhoto = rest.filter((a) => a.coverImageUrl);
   const withoutPhoto = rest.filter((a) => !a.coverImageUrl);

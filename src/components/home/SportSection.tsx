@@ -7,9 +7,11 @@ import { BagIcon } from '@/components/icons/BagIcon';
 import { colors, fontFamily } from '@/lib/theme';
 import { getCategory, getSubcategoryLabel } from '@/lib/data/categories';
 import type { Article, Locale } from '@/lib/types';
+import { orderWithSectionLead } from '@/lib/section-lead';
 
 export function SportSection({ locale, articles, limit = 2 }: { locale: Locale; articles: Article[]; limit?: number }) {
   const cat = getCategory('sport')!;
+  const ordered = orderWithSectionLead(articles);
 
   const card = (a: Article) => (
     <Reveal as="a" key={a.id} href={`/artykul/${a.slug[locale]}`} style={{ display: 'flex', flexDirection: 'column' }}>
@@ -55,8 +57,8 @@ export function SportSection({ locale, articles, limit = 2 }: { locale: Locale; 
         <ExpandableGrid
           wrapperClassName="tk-cards-2"
           wrapperStyle={{ display: 'grid', gap: 48 }}
-          visible={articles.slice(0, limit).map((a) => card(a))}
-          extra={articles.slice(limit).map((a) => card(a))}
+          visible={ordered.slice(0, limit).map((a) => card(a))}
+          extra={ordered.slice(limit).map((a) => card(a))}
         />
       </div>
     </section>

@@ -33,6 +33,7 @@ type Row = {
   tags: string[];
   status: 'draft' | 'published';
   featured: boolean;
+  section_featured: boolean;
   published_at: string | null;
   created_at: string;
   updated_at: string;
@@ -40,7 +41,7 @@ type Row = {
 
 /** Columns for cards / lists — never pull full article bodies over the wire. */
 const LIST_COLUMNS =
-  'id, category, subcategory, slug_pl, slug_en, title_pl, title_en, lead_pl, lead_en, cover_image_url, cover_image_position, author, reading_time_min, rating, tags, status, featured, published_at, created_at, updated_at';
+  'id, category, subcategory, slug_pl, slug_en, title_pl, title_en, lead_pl, lead_en, cover_image_url, cover_image_position, author, reading_time_min, rating, tags, status, featured, section_featured, published_at, created_at, updated_at';
 
 function rowToArticle(r: Row): Article {
   return {
@@ -59,6 +60,7 @@ function rowToArticle(r: Row): Article {
     tags: r.tags ?? [],
     status: r.status,
     featured: r.featured,
+    sectionFeatured: Boolean(r.section_featured),
     publishedAt: r.published_at,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
@@ -93,8 +95,29 @@ function inputToRow(input: Partial<ArticleInput>) {
   if (input.tags !== undefined) row.tags = input.tags;
   if (input.status !== undefined) row.status = input.status;
   if (input.featured !== undefined) row.featured = input.featured;
+  if (input.sectionFeatured !== undefined) row.section_featured = input.sectionFeatured;
   if (input.publishedAt !== undefined) row.published_at = input.publishedAt;
   return row;
+}
+
+/** Ensures at most one section lead per category. */
+async function clearOtherSectionFeatured(articleId: string, category: Category): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    for (const a of localStore.list()) {
+      if (a.category === category && a.id !== articleId && a.sectionFeatured) {
+        localStore.update(a.id, { sectionFeatured: false });
+      }
+    }
+    return;
+  }
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase
+    .from('articles')
+    .update({ section_featured: false })
+    .eq('category', category)
+    .neq('id', articleId)
+    .eq('section_featured', true);
+  if (error) throw error;
 }
 
 export interface ListFilter {
@@ -224,7 +247,11 @@ export const getArticleBySlug = cache(async (locale: 'pl' | 'en', slug: string):
 });
 
 export async function createArticle(input: ArticleInput): Promise<Article> {
-  if (!isSupabaseConfigured()) return localStore.create(input);
+  if (!isSupabaseConfigured()) {
+    const created = localStore.create(input);
+    if (created.sectionFeatured) await clearOtherSectionFeatured(created.id, created.category);
+    return created;
+  }
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },
@@ -232,15 +259,24 @@ export async function createArticle(input: ArticleInput): Promise<Article> {
   const row = { ...inputToRow(input), created_by: user?.id ?? null };
   const { data, error } = await supabase.from('articles').insert(row).select('*').single();
   if (error) throw error;
-  return rowToArticle(data as Row);
+  const article = rowToArticle(data as Row);
+  if (article.sectionFeatured) await clearOtherSectionFeatured(article.id, article.category);
+  return article;
 }
 
 export async function updateArticle(id: string, input: Partial<ArticleInput>): Promise<Article | null> {
-  if (!isSupabaseConfigured()) return localStore.update(id, input);
+  if (!isSupabaseConfigured()) {
+    const updated = localStore.update(id, input);
+    if (updated?.sectionFeatured) await clearOtherSectionFeatured(updated.id, updated.category);
+    return updated;
+  }
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase.from('articles').update(inputToRow(input)).eq('id', id).select('*').maybeSingle();
   if (error) throw error;
-  return data ? rowToArticle(data as Row) : null;
+  if (!data) return null;
+  const article = rowToArticle(data as Row);
+  if (article.sectionFeatured) await clearOtherSectionFeatured(article.id, article.category);
+  return article;
 }
 
 export async function deleteArticle(id: string): Promise<boolean> {

@@ -288,6 +288,34 @@ export function ArticleForm({ action, initial, submitLabel }: ArticleFormProps) 
         </select>
       </div>
 
+      <label
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 12,
+          padding: '14px 16px',
+          border: `1px solid ${colors.line3}`,
+          cursor: 'pointer',
+          maxWidth: 520,
+        }}
+      >
+        <input
+          type="checkbox"
+          name="sectionFeatured"
+          value="true"
+          defaultChecked={Boolean(initial?.sectionFeatured)}
+          style={{ marginTop: 3, width: 16, height: 16, accentColor: colors.accent, flexShrink: 0 }}
+        />
+        <span>
+          <span style={{ display: 'block', fontFamily: fontFamily.mono, fontSize: 11, letterSpacing: '.08em', textTransform: 'uppercase', color: colors.fg, marginBottom: 4 }}>
+            Artykuł główny sekcji
+          </span>
+          <span style={{ fontFamily: fontFamily.serif, fontSize: 14, lineHeight: 1.45, color: colors.muted2 }}>
+            Duży blok w sekcji kategorii na stronie głównej. Bez zaznaczenia — wchodzi tam najnowszy artykuł z tej kategorii.
+          </span>
+        </span>
+      </label>
+
       {state.error && (
         <div role="alert" style={{ fontFamily: fontFamily.mono, fontSize: 12, color: colors.accent }}>
           {state.error}

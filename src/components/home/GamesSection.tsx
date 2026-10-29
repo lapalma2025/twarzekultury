@@ -7,9 +7,11 @@ import { GamepadIcon } from '@/components/icons/GamepadIcon';
 import { colors, fontFamily } from '@/lib/theme';
 import { getCategory, getSubcategoryLabel } from '@/lib/data/categories';
 import type { Article, Locale } from '@/lib/types';
+import { orderWithSectionLead } from '@/lib/section-lead';
 
 export function GamesSection({ locale, articles, limit = 2 }: { locale: Locale; articles: Article[]; limit?: number }) {
   const cat = getCategory('gry')!;
+  const ordered = orderWithSectionLead(articles);
 
   const row = (a: Article, i: number) => {
     const media = (
@@ -79,8 +81,8 @@ export function GamesSection({ locale, articles, limit = 2 }: { locale: Locale; 
 
         <ExpandableGrid
           wrapperStyle={{ display: 'flex', flexDirection: 'column', gap: 48 }}
-          visible={articles.slice(0, limit).map((a, i) => row(a, i))}
-          extra={articles.slice(limit).map((a, i) => row(a, limit + i))}
+          visible={ordered.slice(0, limit).map((a, i) => row(a, i))}
+          extra={ordered.slice(limit).map((a, i) => row(a, limit + i))}
         />
       </div>
     </section>

@@ -54,6 +54,8 @@ create table if not exists public.articles (
   tags text[] not null default '{}',
   status text not null default 'draft' check (status in ('draft', 'published')),
   featured boolean not null default false,
+  -- Large lead card inside the category section on the homepage (one per category).
+  section_featured boolean not null default false,
 
   published_at timestamptz,
   created_at timestamptz not null default now(),
@@ -63,6 +65,7 @@ create table if not exists public.articles (
 
 -- Safe to re-run against a table created before this column existed.
 alter table public.articles add column if not exists cover_image_position text not null default '50% 50%';
+alter table public.articles add column if not exists section_featured boolean not null default false;
 
 create index if not exists articles_category_idx on public.articles (category);
 create index if not exists articles_status_idx on public.articles (status);

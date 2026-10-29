@@ -41,6 +41,7 @@ function formToInput(formData: FormData): ArticleInput | { error: string } {
     status: raw.status,
     // „Twarz tygodnia” ustawiana wyłącznie w /admin/week-face
     featured: false,
+    sectionFeatured: raw.sectionFeatured,
   });
 
   if (!parsed.success) {
@@ -63,6 +64,7 @@ function formToInput(formData: FormData): ArticleInput | { error: string } {
     tags: parseTags(v.tags),
     status: v.status,
     featured: false,
+    sectionFeatured: Boolean(v.sectionFeatured),
     publishedAt: v.status === 'published' ? new Date().toISOString() : null,
   };
 }

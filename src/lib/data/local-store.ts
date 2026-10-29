@@ -38,10 +38,18 @@ function ensureDb(): Db {
   }
 }
 
+function normalizeArticle(a: Article): Article {
+  return {
+    ...a,
+    sectionFeatured: Boolean(a.sectionFeatured),
+  };
+}
+
 function toArticle(input: ArticleInput, id?: string): Article {
   const now = new Date().toISOString();
   return {
     ...input,
+    sectionFeatured: Boolean(input.sectionFeatured),
     id: id ?? crypto.randomUUID(),
     createdAt: now,
     updatedAt: now,
@@ -54,15 +62,17 @@ function write(db: Db) {
 
 export const localStore = {
   list(): Article[] {
-    return ensureDb().articles;
+    return ensureDb().articles.map(normalizeArticle);
   },
 
   get(id: string): Article | null {
-    return ensureDb().articles.find((a) => a.id === id) ?? null;
+    const a = ensureDb().articles.find((x) => x.id === id);
+    return a ? normalizeArticle(a) : null;
   },
 
   getBySlug(locale: 'pl' | 'en', slug: string): Article | null {
-    return ensureDb().articles.find((a) => a.slug[locale] === slug) ?? null;
+    const a = ensureDb().articles.find((x) => x.slug[locale] === slug);
+    return a ? normalizeArticle(a) : null;
   },
 
   create(input: ArticleInput): Article {

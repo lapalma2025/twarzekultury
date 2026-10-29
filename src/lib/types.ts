@@ -28,7 +28,10 @@ export interface Article {
   rating: number | null;
   tags: string[];
   status: ArticleStatus;
+  /** Homepage „Twarz tygodnia” (sitewide hero). */
   featured: boolean;
+  /** Large lead block inside this article's category section. At most one per category. */
+  sectionFeatured: boolean;
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;

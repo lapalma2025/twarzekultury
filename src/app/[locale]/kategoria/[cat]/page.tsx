@@ -7,6 +7,7 @@ import { Reveal } from '@/components/Reveal';
 import { colors, fontFamily } from '@/lib/theme';
 import { CATEGORIES, getCategory, getSubcategoryLabel } from '@/lib/data/categories';
 import { listArticles } from '@/lib/data/articles';
+import { pickSectionLead } from '@/lib/section-lead';
 import { buildPageMetadata } from '@/lib/seo';
 import type { Category, Locale } from '@/lib/types';
 
@@ -48,7 +49,8 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   const allInCat = await listArticles({ status: 'published', category: catKey as Category });
   const filtered = sub ? allInCat.filter((a) => a.subcategory === sub) : allInCat;
-  const [featured, ...rest] = filtered;
+  const featured = pickSectionLead(filtered);
+  const rest = filtered.filter((a) => a.id !== featured?.id);
 
   return (
     <main className="tk-container" style={{ maxWidth: 1600, margin: '0 auto' }}>

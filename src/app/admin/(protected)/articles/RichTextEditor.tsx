@@ -137,23 +137,6 @@ export function RichTextEditor({ id, name, label, defaultValue, required }: Rich
     setReady(true);
   }, []);
 
-  // Flush TipTap → hidden input synchronously on submit (setState would be too late).
-  useEffect(() => {
-    const root = rootRef.current;
-    const form = root?.closest('form');
-    if (!form || !editor) return;
-
-    const flush = () => {
-      if (modeRef.current === 'markdown') return;
-      const md = editorHtmlToMarkdown(editor.getHTML());
-      setMarkdown(md);
-      if (hiddenRef.current) hiddenRef.current.value = md;
-    };
-
-    form.addEventListener('submit', flush, true);
-    return () => form.removeEventListener('submit', flush, true);
-  }, [editor]);
-
   const editor = useEditor(
     {
       extensions: [
@@ -219,6 +202,23 @@ export function RichTextEditor({ id, name, label, defaultValue, required }: Rich
     },
     [ready],
   );
+
+  // Flush TipTap → hidden input synchronously on submit (setState would be too late).
+  useEffect(() => {
+    const root = rootRef.current;
+    const form = root?.closest('form');
+    if (!form || !editor) return;
+
+    const flush = () => {
+      if (modeRef.current === 'markdown') return;
+      const md = editorHtmlToMarkdown(editor.getHTML());
+      setMarkdown(md);
+      if (hiddenRef.current) hiddenRef.current.value = md;
+    };
+
+    form.addEventListener('submit', flush, true);
+    return () => form.removeEventListener('submit', flush, true);
+  }, [editor]);
 
   const uploadAndInsert = useCallback(
     async (file: File) => {
